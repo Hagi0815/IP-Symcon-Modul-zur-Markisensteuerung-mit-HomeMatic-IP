@@ -1,18 +1,13 @@
 {
-  "id": "{B2C3D4E5-F678-4321-ABCD-1234567890AB}",
-  "author": "Christian Hagedorn",
-  "name": "Markisensteuerung HomematicIP",
-  "url": "https://github.com/deinBenutzername/Markisensteuerung_HomeMatic",
-  "version": "1.0",
-  "modules": [
-    {
-      "id": "{A1B2C3D4-5678-1234-ABCD-9876543210AB}",
-      "name": "Markisensteuerung_HomeMatic",
-      "type": 3,
-      "class": "Markisensteuerung_HomeMatic",
-      "caption": "Markisensteuerung",
-      "description": "Automatisierte Markisensteuerung abhängig von Wetterdaten (Regen, Wind, Tageszeit) mit HomeMatic IP Aktoren.",
-      "version": "1.0"
-    }
-  ]
+	"id": "{B2C3D4E5-F678-4321-ABCD-1234567890AB}",
+	"author": "Christian Hagedorn",
+	"name": "Markisensteuerung HomematicIP",
+	"url": "",
+        "compatibility": {
+            "version": "4.2",
+            "date": 1491343200
+        },
+        "version": "1.0",
+        "build": 0,
+        "date": 0
 }
