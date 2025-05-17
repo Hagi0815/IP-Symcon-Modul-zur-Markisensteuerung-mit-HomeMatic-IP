@@ -9,9 +9,6 @@
     		],
 
 	"url": "",
-	"parentRequirements": [],
-	"childRequirements": [],
-	"implemented": [],
 	"prefix": "Markise_HMIP"
         "compatibility": {
             "version": "8.0"
