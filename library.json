@@ -1,13 +1,8 @@
 {
 	"id": "{B2C3D4E5-F678-4321-ABCD-1234567890AB}",
-	"author": "Christian Hagedorn",
 	"name": "Markisensteuerung HomematicIP",
+	"author": "Christian Hagedorn",
 	"vendor": "HomeMatic",
-	"aliases":
-    		[
-        	"Markisensteuerung HomematicIP"
-    		],
-
 	"url": "",
 	"prefix": "Markise_HMIP"
         "compatibility": {
