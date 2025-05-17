@@ -2,9 +2,10 @@
   "id": "{A1B2C3D4-5678-1234-ABCD-9876543210AB}",
   "name": "Markisensteuerung_HomeMatic",
   "type": 3,
-  "class": "Markisensteuerung_HomeMatic",
-  "caption": "Markisensteuerung",
-  "version": "1.0",
-  "author": "Christian Hagedorn",
-  "description": "Steuerung einer Markise abhängig von Wetterdaten (Regen, Wind, Tageszeit) mit HomeMatic IP."
+  "vendor": "Markisensteuerung_HomeMatic",
+  "aliases": ["Markisensteuerung_HomeMatic"],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "Markisensteuerung_HomeMatic"
 }
