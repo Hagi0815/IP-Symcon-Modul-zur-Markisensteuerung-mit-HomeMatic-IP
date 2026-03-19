@@ -51,14 +51,18 @@
                 {
                     "type": "ValidationTextBox",
                     "name": "StartTime",
-                    "caption": "Startzeit (HH:MM)",
+                    "caption": "Startzeit morgens (HH:MM)",
                     "width": "120px"
                 },
                 {
                     "type": "ValidationTextBox",
-                    "name": "EndTime",
-                    "caption": "Endzeit (HH:MM)",
+                    "name": "EndTimeDefault",
+                    "caption": "Standard-Einfahrzeit abends (HH:MM)",
                     "width": "120px"
+                },
+                {
+                    "type": "Label",
+                    "caption": "Hinweis: Die Einfahrzeit kann zusätzlich im WebFront stündlich angepasst werden."
                 }
             ]
         },
@@ -68,12 +72,16 @@
             "items": [
                 {
                     "type": "NumberSpinner",
-                    "name": "WindSpeedThreshold",
-                    "caption": "Windgeschwindigkeit Limit (km/h)",
+                    "name": "WindThresholdDefault",
+                    "caption": "Standard-Windgrenze (km/h)",
                     "digits": 1,
                     "minimum": 0,
                     "maximum": 200,
                     "suffix": " km/h"
+                },
+                {
+                    "type": "Label",
+                    "caption": "Hinweis: Die Windgrenze kann zusätzlich im WebFront angepasst werden."
                 }
             ]
         }
