@@ -1,0 +1,100 @@
+{
+    "elements": [
+        {
+            "type": "ExpansionPanel",
+            "caption": "Sensoren",
+            "items": [
+                {
+                    "type": "SelectVariable",
+                    "name": "RainSensorID",
+                    "caption": "Regensensor (Boolean)",
+                    "validVariableType": 0
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "WindSensorID",
+                    "caption": "Windsensor (Float, km/h)",
+                    "validVariableType": 2
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Aktor",
+            "items": [
+                {
+                    "type": "SelectVariable",
+                    "name": "ActorID",
+                    "caption": "Aktor (HmIP-BROLL / HmIP-FROLL)"
+                },
+                {
+                    "type": "Select",
+                    "name": "ActorType",
+                    "caption": "Aktor-Typ",
+                    "options": [
+                        {
+                            "caption": "Level (Float 0.0–1.0)",
+                            "value": 0
+                        },
+                        {
+                            "caption": "Boolean (An/Aus)",
+                            "value": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Zeitfenster",
+            "items": [
+                {
+                    "type": "ValidationTextBox",
+                    "name": "StartTime",
+                    "caption": "Startzeit (HH:MM)",
+                    "width": "120px"
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "EndTime",
+                    "caption": "Endzeit (HH:MM)",
+                    "width": "120px"
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Schwellenwerte",
+            "items": [
+                {
+                    "type": "NumberSpinner",
+                    "name": "WindSpeedThreshold",
+                    "caption": "Windgeschwindigkeit Limit (km/h)",
+                    "digits": 1,
+                    "minimum": 0,
+                    "maximum": 200,
+                    "suffix": " km/h"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "Jetzt prüfen",
+            "onClick": "Markise_HMIP_Check($id);"
+        }
+    ],
+    "status": [
+        {
+            "code": 102,
+            "icon": "active",
+            "caption": "Aktiv"
+        },
+        {
+            "code": 104,
+            "icon": "inactive",
+            "caption": "Inaktiv"
+        }
+    ]
+}

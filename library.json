@@ -1,13 +1,13 @@
 {
-	"id": "{B2C3D4E5-F678-4321-ABCD-1234567890AB}",
-	"name": "Markisensteuerung HomematicIP",
-	"author": "Christian Hagedorn",
-	"url": "",
-	"prefix": "Markise_HMIP"
-        "compatibility": {
-            "version": "8.0"
-        },
-        "version": "1.0",
-        "build": 0,
-        "date": 0
+    "id": "{B2C3D4E5-F678-4321-ABCD-1234567890AB}",
+    "name": "Markisensteuerung HomematicIP",
+    "author": "Christian Hagedorn",
+    "url": "",
+    "prefix": "Markise_HMIP",
+    "compatibility": {
+        "version": "8.0"
+    },
+    "version": "1.0",
+    "build": 1,
+    "date": 0
 }

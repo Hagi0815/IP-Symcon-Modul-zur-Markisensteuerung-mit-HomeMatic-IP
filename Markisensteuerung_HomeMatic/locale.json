@@ -1,0 +1,48 @@
+{
+    "translations": {
+        "de": {
+            "Automatik aktiv": "Automatik aktiv",
+            "Manuell einfahren": "Manuell einfahren",
+            "Letzte Aktion": "Letzte Aktion",
+            "Letzte Aktion um": "Letzte Aktion um",
+            "Sensoren": "Sensoren",
+            "Aktor": "Aktor",
+            "Zeitfenster": "Zeitfenster",
+            "Schwellenwerte": "Schwellenwerte",
+            "Regensensor (Boolean)": "Regensensor (Boolean)",
+            "Windsensor (Float, km/h)": "Windsensor (Float, km/h)",
+            "Aktor (HmIP-BROLL / HmIP-FROLL)": "Aktor (HmIP-BROLL / HmIP-FROLL)",
+            "Aktor-Typ": "Aktor-Typ",
+            "Level (Float 0.0–1.0)": "Level (Float 0.0–1.0)",
+            "Boolean (An/Aus)": "Boolean (An/Aus)",
+            "Startzeit (HH:MM)": "Startzeit (HH:MM)",
+            "Endzeit (HH:MM)": "Endzeit (HH:MM)",
+            "Windgeschwindigkeit Limit (km/h)": "Windgeschwindigkeit Limit (km/h)",
+            "Jetzt prüfen": "Jetzt prüfen",
+            "Aktiv": "Aktiv",
+            "Inaktiv": "Inaktiv"
+        },
+        "en": {
+            "Automatik aktiv": "Auto mode active",
+            "Manuell einfahren": "Manual retract",
+            "Letzte Aktion": "Last action",
+            "Letzte Aktion um": "Last action at",
+            "Sensoren": "Sensors",
+            "Aktor": "Actor",
+            "Zeitfenster": "Time window",
+            "Schwellenwerte": "Thresholds",
+            "Regensensor (Boolean)": "Rain sensor (Boolean)",
+            "Windsensor (Float, km/h)": "Wind sensor (Float, km/h)",
+            "Aktor (HmIP-BROLL / HmIP-FROLL)": "Actor (HmIP-BROLL / HmIP-FROLL)",
+            "Aktor-Typ": "Actor type",
+            "Level (Float 0.0–1.0)": "Level (Float 0.0–1.0)",
+            "Boolean (An/Aus)": "Boolean (On/Off)",
+            "Startzeit (HH:MM)": "Start time (HH:MM)",
+            "Endzeit (HH:MM)": "End time (HH:MM)",
+            "Windgeschwindigkeit Limit (km/h)": "Wind speed limit (km/h)",
+            "Jetzt prüfen": "Check now",
+            "Aktiv": "Active",
+            "Inaktiv": "Inactive"
+        }
+    }
+}
