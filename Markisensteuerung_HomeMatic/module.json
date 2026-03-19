@@ -4,7 +4,7 @@
     "type": 1,
     "vendor": "Christian Hagedorn",
     "aliases": ["Markisensteuerung HomeMatic IP"],
-    "parentRequirements": [],
+    "parentRequirements": ["{00000000-0000-0000-0000-000000000000}"],
     "childRequirements": [],
     "implemented": [],
     "prefix": "Markise_HMIP",
