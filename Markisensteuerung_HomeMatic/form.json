@@ -34,11 +34,11 @@
                     "options": [
                         {
                             "caption": "Level (Float 0.0–1.0)",
-                            "value": 0
+                            "value": "level"
                         },
                         {
                             "caption": "Boolean (An/Aus)",
-                            "value": 1
+                            "value": "bool"
                         }
                     ]
                 }
