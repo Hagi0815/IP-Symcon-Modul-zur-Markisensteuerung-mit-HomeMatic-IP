@@ -564,7 +564,6 @@ class Rolladensteuerung extends IPSModuleStrict
                 break;
 
             case VM_UPDATE:
-            case VM_CHANGEPROFILEACTION:
                 // Nur reagieren wenn sich der Wert tatsächlich geändert hat ($Data[1] = true)
                 $this->handleUpdateMessage($SenderID, $Data, true);
                 break;
@@ -1563,35 +1562,27 @@ class Rolladensteuerung extends IPSModuleStrict
 
     private function RegisterMessages(): void
     {
+        // Nur Quellen die einen Steuerungslauf auslösen sollen:
+        // - Wochenplan (EM_UPDATE)
+        // - IsDay-Indikator / Helligkeit für Tagerkennung
+        // - Kontakte (Öffnen, Schließen, Notfall)
+        // - Feiertag-Indikator
+        // NICHT mehr: Azimuth, Altitude, Helligkeitssensoren für Beschattung (kein Zyklus)
         $objectIDs = [
-            self::PROP_WEEKLYTIMETABLEEVENTID                      => $this->ReadPropertyInteger(self::PROP_WEEKLYTIMETABLEEVENTID),
-            self::PROP_HOLIDAYINDICATORID                          => $this->ReadPropertyInteger(self::PROP_HOLIDAYINDICATORID),
-            self::PROP_BRIGHTNESSID                                => $this->ReadPropertyInteger(self::PROP_BRIGHTNESSID),
-            self::PROP_BRIGHTNESSTHRESHOLDID                       => $this->ReadPropertyInteger(self::PROP_BRIGHTNESSTHRESHOLDID),
-            self::PROP_ISDAYINDICATORID                            => $this->ReadPropertyInteger(self::PROP_ISDAYINDICATORID),
-            self::PROP_CONTACTCLOSE1ID                             => $this->ReadPropertyInteger(self::PROP_CONTACTCLOSE1ID),
-            self::PROP_CONTACTCLOSE2ID                             => $this->ReadPropertyInteger(self::PROP_CONTACTCLOSE2ID),
-            self::PROP_CONTACTOPEN1ID                              => $this->ReadPropertyInteger(self::PROP_CONTACTOPEN1ID),
-            self::PROP_CONTACTOPEN2ID                              => $this->ReadPropertyInteger(self::PROP_CONTACTOPEN2ID),
-            self::PROP_EMERGENCYCONTACTID                          => $this->ReadPropertyInteger(self::PROP_EMERGENCYCONTACTID),
-            self::PROP_ACTIVATORIDSHADOWINGBYSUNPOSITION           => $this->ReadPropertyInteger(self::PROP_ACTIVATORIDSHADOWINGBYSUNPOSITION),
-            self::PROP_AZIMUTHID                                   => $this->ReadPropertyInteger(self::PROP_AZIMUTHID),
-            self::PROP_ALTITUDEID                                  => $this->ReadPropertyInteger(self::PROP_ALTITUDEID),
-            self::PROP_BRIGHTNESSIDSHADOWINGBYSUNPOSITION          => $this->ReadPropertyInteger(self::PROP_BRIGHTNESSIDSHADOWINGBYSUNPOSITION),
-            self::PROP_BRIGHTNESSTHRESHOLDIDSHADOWINGBYSUNPOSITION => $this->ReadPropertyInteger(
-                self::PROP_BRIGHTNESSTHRESHOLDIDSHADOWINGBYSUNPOSITION
-            ),
-            self::PROP_TEMPERATUREIDSHADOWINGBYSUNPOSITION         => $this->ReadPropertyInteger(self::PROP_TEMPERATUREIDSHADOWINGBYSUNPOSITION),
-            self::PROP_ACTIVATORIDSHADOWINGBRIGHTNESS              => $this->ReadPropertyInteger(self::PROP_ACTIVATORIDSHADOWINGBRIGHTNESS),
-            self::PROP_BRIGHTNESSIDSHADOWINGBRIGHTNESS             => $this->ReadPropertyInteger(self::PROP_BRIGHTNESSIDSHADOWINGBRIGHTNESS),
-            self::PROP_THRESHOLDIDHIGHBRIGHTNESS                   => $this->ReadPropertyInteger(self::PROP_THRESHOLDIDHIGHBRIGHTNESS),
-            self::PROP_THRESHOLDIDLESSBRIGHTNESS                   => $this->ReadPropertyInteger(self::PROP_THRESHOLDIDLESSBRIGHTNESS)
+            self::PROP_WEEKLYTIMETABLEEVENTID => $this->ReadPropertyInteger(self::PROP_WEEKLYTIMETABLEEVENTID),
+            self::PROP_HOLIDAYINDICATORID     => $this->ReadPropertyInteger(self::PROP_HOLIDAYINDICATORID),
+            self::PROP_ISDAYINDICATORID       => $this->ReadPropertyInteger(self::PROP_ISDAYINDICATORID),
+            self::PROP_BRIGHTNESSID           => $this->ReadPropertyInteger(self::PROP_BRIGHTNESSID),
+            self::PROP_BRIGHTNESSTHRESHOLDID  => $this->ReadPropertyInteger(self::PROP_BRIGHTNESSTHRESHOLDID),
+            self::PROP_CONTACTCLOSE1ID        => $this->ReadPropertyInteger(self::PROP_CONTACTCLOSE1ID),
+            self::PROP_CONTACTCLOSE2ID        => $this->ReadPropertyInteger(self::PROP_CONTACTCLOSE2ID),
+            self::PROP_CONTACTOPEN1ID         => $this->ReadPropertyInteger(self::PROP_CONTACTOPEN1ID),
+            self::PROP_CONTACTOPEN2ID         => $this->ReadPropertyInteger(self::PROP_CONTACTOPEN2ID),
+            self::PROP_EMERGENCYCONTACTID     => $this->ReadPropertyInteger(self::PROP_EMERGENCYCONTACTID),
+            self::PROP_ACTIVATORIDSHADOWINGBRIGHTNESS => $this->ReadPropertyInteger(self::PROP_ACTIVATORIDSHADOWINGBRIGHTNESS),
+            self::PROP_ACTIVATORIDSHADOWINGBYSUNPOSITION => $this->ReadPropertyInteger(self::PROP_ACTIVATORIDSHADOWINGBYSUNPOSITION),
         ];
 
-        $objectIDs_RequiredAction = [
-            self::PROP_BLINDLEVELID => $this->ReadPropertyInteger(self::PROP_BLINDLEVELID),
-            self::PROP_SLATSLEVELID => $this->ReadPropertyInteger(self::PROP_SLATSLEVELID),
-        ];
         foreach ($this->GetMessageList() as $senderId => $msgs) {
             foreach ($msgs as $msg) {
                 $this->UnregisterMessage($senderId, $msg);
@@ -1605,12 +1596,7 @@ class Rolladensteuerung extends IPSModuleStrict
                 $this->RegisterMessage($id, EM_UPDATE);
             }
         }
-
-        foreach ($objectIDs_RequiredAction as $id) {
-            if (IPS_VariableExists($id)) {
-                $this->RegisterMessage($id, VM_CHANGEPROFILEACTION);
-            }
-        }
+        // VM_CHANGEPROFILEACTION nicht mehr registrieren – kein Zyklus durch Aktor-Rückmeldung
     }
 
     private function RegisterAttributes(): void
