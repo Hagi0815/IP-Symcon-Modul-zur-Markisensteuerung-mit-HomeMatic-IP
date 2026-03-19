@@ -1,13 +1,13 @@
 {
-    "id": "{B2C3D4E5-F678-4321-ABCD-1234567890AB}",
-    "name": "Markisensteuerung HomematicIP",
-    "author": "Christian Hagedorn",
-    "url": "",
-    "prefix": "Markise_HMIP",
-    "compatibility": {
-        "version": "8.0"
-    },
-    "version": "1.0",
-    "build": 1,
+  "id": "{153CE11A-48A3-48F4-A022-140A3F7509DB}",
+  "author": "Hagi",
+  "name": "Rolladensteuerung",
+  "url": "",
+  "compatibility": {
+    "version": "8.1",
     "date": 0
+  },
+  "version": "2.50",
+  "build": 71,
+  "date": 1772439381
 }
