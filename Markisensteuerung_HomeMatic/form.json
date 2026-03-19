@@ -20,6 +20,72 @@
         },
         {
             "type": "ExpansionPanel",
+            "caption": "Zusatzsensor 1",
+            "items": [
+                {
+                    "type": "Select",
+                    "name": "ExtraSensor1Type",
+                    "caption": "Typ",
+                    "options": [
+                        { "caption": "Deaktiviert",      "value": "off"         },
+                        { "caption": "Temperatur (°C)",  "value": "temperature" },
+                        { "caption": "Helligkeit (Lux)", "value": "brightness"  },
+                        { "caption": "UV-Index",         "value": "uv"          }
+                    ]
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "ExtraSensor1ID",
+                    "caption": "Sensor-Variable"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "ExtraSensor1ThresholdDefault",
+                    "caption": "Standard-Schwellwert (Einfahren ab)",
+                    "minimum": 0,
+                    "maximum": 100000
+                },
+                {
+                    "type": "Label",
+                    "caption": "Typ und Schwellwert können zusätzlich im WebFront geändert werden."
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Zusatzsensor 2",
+            "items": [
+                {
+                    "type": "Select",
+                    "name": "ExtraSensor2Type",
+                    "caption": "Typ",
+                    "options": [
+                        { "caption": "Deaktiviert",      "value": "off"         },
+                        { "caption": "Temperatur (°C)",  "value": "temperature" },
+                        { "caption": "Helligkeit (Lux)", "value": "brightness"  },
+                        { "caption": "UV-Index",         "value": "uv"          }
+                    ]
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "ExtraSensor2ID",
+                    "caption": "Sensor-Variable"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "ExtraSensor2ThresholdDefault",
+                    "caption": "Standard-Schwellwert (Einfahren ab)",
+                    "minimum": 0,
+                    "maximum": 100000
+                },
+                {
+                    "type": "Label",
+                    "caption": "Typ und Schwellwert können zusätzlich im WebFront geändert werden."
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
             "caption": "Aktor",
             "items": [
                 {
@@ -32,14 +98,8 @@
                     "name": "ActorType",
                     "caption": "Aktor-Typ",
                     "options": [
-                        {
-                            "caption": "Level (Float 0.0–1.0)",
-                            "value": "level"
-                        },
-                        {
-                            "caption": "Boolean (An/Aus)",
-                            "value": "bool"
-                        }
+                        { "caption": "Level (Float 0.0–1.0)", "value": "level" },
+                        { "caption": "Boolean (An/Aus)",       "value": "bool"  }
                     ]
                 }
             ]
@@ -50,42 +110,37 @@
             "items": [
                 {
                     "type": "NumberSpinner",
-                    "name": "StartHourDefault",
-                    "caption": "Standard-Ausfahrzeit morgens (Stunde)",
+                    "name": "StartMinDefault",
+                    "caption": "Standard-Ausfahrzeit (Minuten seit 00:00)",
                     "minimum": 0,
-                    "maximum": 23,
-                    "suffix": ":00 Uhr"
+                    "maximum": 1425,
+                    "suffix": " min"
                 },
                 {
                     "type": "NumberSpinner",
-                    "name": "EndHourDefault",
-                    "caption": "Standard-Einfahrzeit abends (Stunde)",
+                    "name": "EndMinDefault",
+                    "caption": "Standard-Einfahrzeit (Minuten seit 00:00)",
                     "minimum": 0,
-                    "maximum": 23,
-                    "suffix": ":00 Uhr"
+                    "maximum": 1425,
+                    "suffix": " min"
                 },
                 {
                     "type": "Label",
-                    "caption": "Hinweis: Beide Zeiten können zusätzlich direkt im WebFront stündlich angepasst werden."
+                    "caption": "Beispiele: 480 = 08:00 Uhr, 1200 = 20:00 Uhr. Im WebFront viertelstündlich wählbar."
                 }
             ]
         },
         {
             "type": "ExpansionPanel",
-            "caption": "Schwellenwerte (Standardwerte)",
+            "caption": "Windgrenze (Standardwert)",
             "items": [
                 {
                     "type": "NumberSpinner",
                     "name": "WindThresholdDefault",
                     "caption": "Standard-Windgrenze (km/h)",
-                    "digits": 1,
                     "minimum": 0,
                     "maximum": 200,
                     "suffix": " km/h"
-                },
-                {
-                    "type": "Label",
-                    "caption": "Hinweis: Die Windgrenze kann zusätzlich direkt im WebFront angepasst werden."
                 }
             ]
         }
@@ -98,15 +153,7 @@
         }
     ],
     "status": [
-        {
-            "code": 102,
-            "icon": "active",
-            "caption": "Aktiv"
-        },
-        {
-            "code": 104,
-            "icon": "inactive",
-            "caption": "Inaktiv"
-        }
+        { "code": 102, "icon": "active",   "caption": "Aktiv"   },
+        { "code": 104, "icon": "inactive", "caption": "Inaktiv" }
     ]
 }
