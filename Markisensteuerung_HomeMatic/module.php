@@ -6,11 +6,12 @@
  * Steuert eine Markise abhängig von Regen, Wind und Tageszeit.
  * Unterstützt HomeMatic IP Aktoren wie HmIP-BROLL oder HmIP-FROLL.
  *
- * Windgrenze, Ausfahrzeit morgens und Einfahrzeit abends
- * sind direkt im WebFront einstellbar.
+ * Ausfahrzeit morgens, Einfahrzeit abends und Windgrenze
+ * sind als Auswahlprofile direkt im WebFront einstellbar.
+ * Für jede Variable wird automatisch ein Aktionsskript angelegt.
  *
  * @author  Christian Hagedorn
- * @version 1.4
+ * @version 1.5
  */
 class Markisensteuerung_HomeMatic extends IPSModule
 {
@@ -24,12 +25,12 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
         // --- Aktor-Eigenschaften ---
         $this->RegisterPropertyInteger('ActorID', 0);
-        $this->RegisterPropertyString('ActorType', 'level'); // 'level' oder 'bool'
+        $this->RegisterPropertyString('ActorType', 'level');
 
         // --- Standardwerte für WebFront-Variablen ---
         $this->RegisterPropertyInteger('StartHourDefault', 8);
         $this->RegisterPropertyInteger('EndHourDefault', 20);
-        $this->RegisterPropertyFloat('WindThresholdDefault', 10.0);
+        $this->RegisterPropertyInteger('WindThresholdDefault', 10);
 
         // --- Profile ZUERST anlegen ---
         $this->RegisterProfiles();
@@ -41,21 +42,21 @@ class Markisensteuerung_HomeMatic extends IPSModule
         $this->RegisterVariableBoolean('ManualDrive', 'Manuell ausfahren', '~Switch', 20);
         $this->EnableAction('ManualDrive');
 
-        // --- Im WebFront einstellbare Variablen ---
-        $this->RegisterVariableInteger('StartHour', 'Ausfahren ab Uhrzeit', 'Markise.Hour', 30);
+        // --- WebFront-Auswahlvariablen ---
+        $this->RegisterVariableInteger('StartHour', 'Ausfahren ab Uhrzeit', 'Markise.StartHour', 30);
         $this->EnableAction('StartHour');
 
-        $this->RegisterVariableInteger('EndHour', 'Einfahren ab Uhrzeit', 'Markise.Hour', 40);
+        $this->RegisterVariableInteger('EndHour', 'Einfahren ab Uhrzeit', 'Markise.EndHour', 40);
         $this->EnableAction('EndHour');
 
-        $this->RegisterVariableFloat('WindThreshold', 'Windgrenze (km/h)', '', 50);
+        $this->RegisterVariableInteger('WindThreshold', 'Windgrenze (km/h)', 'Markise.WindThreshold', 50);
         $this->EnableAction('WindThreshold');
 
         // --- Statusvariablen ---
         $this->RegisterVariableString('LastAction', 'Letzte Aktion', '', 60);
         $this->RegisterVariableString('LastCheck', 'Letzte Prüfung', '', 70);
 
-        // --- Timer (alle 5 Minuten) ---
+        // --- Timer ---
         $this->RegisterTimer('CheckTimer', 0, 'IPS_RequestAction(' . $this->InstanceID . ', "Check", "");');
     }
 
@@ -73,9 +74,12 @@ class Markisensteuerung_HomeMatic extends IPSModule
         if ($this->GetValue('EndHour') == 0) {
             $this->SetValue('EndHour', $this->ReadPropertyInteger('EndHourDefault'));
         }
-        if ($this->GetValue('WindThreshold') == 0.0) {
-            $this->SetValue('WindThreshold', $this->ReadPropertyFloat('WindThresholdDefault'));
+        if ($this->GetValue('WindThreshold') == 0) {
+            $this->SetValue('WindThreshold', $this->ReadPropertyInteger('WindThresholdDefault'));
         }
+
+        // Aktionsskripte anlegen
+        $this->RegisterActionScripts();
 
         $this->SetTimerInterval('CheckTimer', 300000);
     }
@@ -98,21 +102,18 @@ class Markisensteuerung_HomeMatic extends IPSModule
                 break;
 
             case 'StartHour':
-                $hour = max(0, min(23, (int) $Value));
-                $this->SetValue('StartHour', $hour);
-                $this->LogMessage('Ausfahrzeit geändert auf ' . $hour . ':00 Uhr', KL_MESSAGE);
+                $this->SetValue('StartHour', (int) $Value);
+                $this->LogMessage('Ausfahrzeit geändert auf ' . (int) $Value . ':00 Uhr', KL_MESSAGE);
                 break;
 
             case 'EndHour':
-                $hour = max(0, min(23, (int) $Value));
-                $this->SetValue('EndHour', $hour);
-                $this->LogMessage('Einfahrzeit geändert auf ' . $hour . ':00 Uhr', KL_MESSAGE);
+                $this->SetValue('EndHour', (int) $Value);
+                $this->LogMessage('Einfahrzeit geändert auf ' . (int) $Value . ':00 Uhr', KL_MESSAGE);
                 break;
 
             case 'WindThreshold':
-                $value = max(0.0, min(200.0, (float) $Value));
-                $this->SetValue('WindThreshold', $value);
-                $this->LogMessage('Windgrenze geändert auf ' . $value . ' km/h', KL_MESSAGE);
+                $this->SetValue('WindThreshold', (int) $Value);
+                $this->LogMessage('Windgrenze geändert auf ' . (int) $Value . ' km/h', KL_MESSAGE);
                 break;
 
             case 'Check':
@@ -123,7 +124,6 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
     /**
      * Prüft Sensoren und steuert die Markise.
-     * Wird vom Timer und vom „Jetzt prüfen"-Button aufgerufen.
      */
     public function Check()
     {
@@ -137,29 +137,22 @@ class Markisensteuerung_HomeMatic extends IPSModule
             return;
         }
 
-        $rainSensorID = $this->ReadPropertyInteger('RainSensorID');
-        $windSensorID = $this->ReadPropertyInteger('WindSensorID');
-        $actorID      = $this->ReadPropertyInteger('ActorID');
+        $rainSensorID  = $this->ReadPropertyInteger('RainSensorID');
+        $windSensorID  = $this->ReadPropertyInteger('WindSensorID');
+        $actorID       = $this->ReadPropertyInteger('ActorID');
 
-        // Werte aus WebFront-Variablen lesen
-        $windThreshold = $this->GetValue('WindThreshold');
-        $startHour     = $this->GetValue('StartHour');
-        $endHour       = $this->GetValue('EndHour');
-        $startTime     = sprintf('%02d:00', $startHour);
-        $endTime       = sprintf('%02d:00', $endHour);
+        $windThreshold = (int) $this->GetValue('WindThreshold');
+        $startTime     = sprintf('%02d:00', $this->GetValue('StartHour'));
+        $endTime       = sprintf('%02d:00', $this->GetValue('EndHour'));
 
-        // Sensor-Werte lesen
         $rain = ($rainSensorID > 0 && IPS_VariableExists($rainSensorID))
-            ? (bool) GetValue($rainSensorID)
-            : false;
+            ? (bool) GetValue($rainSensorID) : false;
 
         $wind = ($windSensorID > 0 && IPS_VariableExists($windSensorID))
-            ? (float) GetValue($windSensorID)
-            : 0.0;
+            ? (float) GetValue($windSensorID) : 0.0;
 
         $now = date('H:i');
 
-        // Einfahrgründe sammeln
         $retractReasons = [];
         if ($rain) {
             $retractReasons[] = 'Regen erkannt';
@@ -194,24 +187,102 @@ class Markisensteuerung_HomeMatic extends IPSModule
     // -------------------------------------------------------------------------
 
     /**
-     * Legt alle benötigten Variablenprofile an.
-     * Wird in Create() und ApplyChanges() aufgerufen.
+     * Legt alle Variablenprofile als Auswahloptionen an.
      */
     private function RegisterProfiles()
     {
-        if (!IPS_VariableProfileExists('Markise.Hour')) {
-            IPS_CreateVariableProfile('Markise.Hour', 1); // 1 = Integer
-            IPS_SetVariableProfileValues('Markise.Hour', 0, 23, 1);
-            IPS_SetVariableProfileText('Markise.Hour', '', ':00 Uhr');
-            IPS_SetVariableProfileIcon('Markise.Hour', 'Clock');
+        // Profil: Ausfahrzeit morgens (5–12 Uhr)
+        if (!IPS_VariableProfileExists('Markise.StartHour')) {
+            IPS_CreateVariableProfile('Markise.StartHour', 1);
+            IPS_SetVariableProfileIcon('Markise.StartHour', 'Sun');
+            foreach ([5, 6, 7, 8, 9, 10, 11, 12] as $h) {
+                IPS_SetVariableProfileAssociation('Markise.StartHour', $h, $h . ':00 Uhr', '', -1);
+            }
+        }
+
+        // Profil: Einfahrzeit abends (15–22 Uhr)
+        if (!IPS_VariableProfileExists('Markise.EndHour')) {
+            IPS_CreateVariableProfile('Markise.EndHour', 1);
+            IPS_SetVariableProfileIcon('Markise.EndHour', 'Moon');
+            foreach ([15, 16, 17, 18, 19, 20, 21, 22] as $h) {
+                IPS_SetVariableProfileAssociation('Markise.EndHour', $h, $h . ':00 Uhr', '', -1);
+            }
+        }
+
+        // Profil: Windgrenze als Integer mit km/h Suffix
+        if (!IPS_VariableProfileExists('Markise.WindThreshold')) {
+            IPS_CreateVariableProfile('Markise.WindThreshold', 1); // 1 = Integer
+            IPS_SetVariableProfileIcon('Markise.WindThreshold', 'Wind');
+            IPS_SetVariableProfileText('Markise.WindThreshold', '', ' km/h');
+            foreach ([5, 10, 15, 20, 25, 30, 40, 50, 60] as $v) {
+                IPS_SetVariableProfileAssociation('Markise.WindThreshold', $v, $v . ' km/h', '', -1);
+            }
+        }
+    }
+
+    /**
+     * Legt Aktionsskripte für die drei WebFront-Variablen an,
+     * sofern noch nicht vorhanden. Die Skripte liegen als
+     * Geschwister-Objekte direkt unter der Instanz.
+     */
+    private function RegisterActionScripts()
+    {
+        $instanceID = $this->InstanceID;
+        $parentID   = IPS_GetObject($instanceID)['ParentID'];
+
+        $scripts = [
+            'Markise_Set_StartHour' => [
+                'caption' => 'Markise – Ausfahrzeit setzen',
+                'code'    => '<?php
+// Ausfahrzeit für Markise setzen
+// Erlaubte Werte: 5, 6, 7, 8, 9, 10, 11, 12
+$stunde = 8; // gewünschte Stunde hier eintragen
+IPS_RequestAction(' . $instanceID . ', "StartHour", $stunde);
+',
+            ],
+            'Markise_Set_EndHour' => [
+                'caption' => 'Markise – Einfahrzeit setzen',
+                'code'    => '<?php
+// Einfahrzeit für Markise setzen
+// Erlaubte Werte: 15, 16, 17, 18, 19, 20, 21, 22
+$stunde = 20; // gewünschte Stunde hier eintragen
+IPS_RequestAction(' . $instanceID . ', "EndHour", $stunde);
+',
+            ],
+            'Markise_Set_WindThreshold' => [
+                'caption' => 'Markise – Windgrenze setzen',
+                'code'    => '<?php
+// Windgrenze für Markise setzen (km/h)
+// Erlaubte Werte: 5, 10, 15, 20, 25, 30, 40, 50, 60
+$grenze = 10; // gewünschten Wert hier eintragen
+IPS_RequestAction(' . $instanceID . ', "WindThreshold", $grenze);
+',
+            ],
+        ];
+
+        foreach ($scripts as $name => $cfg) {
+            // Prüfen ob ein Skript mit diesem Namen bereits unter dem Parent existiert
+            $existingID = 0;
+            foreach (IPS_GetChildrenIDs($parentID) as $childID) {
+                if (IPS_GetObject($childID)['ObjectType'] === 3) { // 3 = Skript
+                    if (IPS_GetObject($childID)['ObjectName'] === $cfg['caption']) {
+                        $existingID = $childID;
+                        break;
+                    }
+                }
+            }
+
+            if ($existingID === 0) {
+                $scriptID = IPS_CreateScript(0); // 0 = PHP
+                IPS_SetName($scriptID, $cfg['caption']);
+                IPS_SetParent($scriptID, $parentID);
+                IPS_SetScriptContent($scriptID, $cfg['code']);
+            }
         }
     }
 
     /**
      * Setzt die Aktorposition (Level oder Boolean).
-     *
-     * @param int $actorID   Objekt-ID des Aktors
-     * @param int $position  0 = einfahren, 100 = ausfahren
      */
     private function SetActorPosition(int $actorID, int $position)
     {
