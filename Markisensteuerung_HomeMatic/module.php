@@ -65,14 +65,14 @@ class Markisensteuerung_HomeMatic extends IPSModule
         $this->RegisterVariableString('Extra1Type', 'Zusatz 1 – Typ', 'Markise.SensorType', 60);
         $this->EnableAction('Extra1Type');
 
-        $this->RegisterVariableInteger('Extra1Threshold', 'Zusatz 1 – Schwellwert', 'Markise.Extra1Threshold', 70);
+        $this->RegisterVariableInteger('Extra1Threshold', 'Zusatz 1 – Schwellwert', 'Markise.Threshold.Off', 70);
         $this->EnableAction('Extra1Threshold');
 
         // --- WebFront: Zusatzsensor 2 ---
         $this->RegisterVariableString('Extra2Type', 'Zusatz 2 – Typ', 'Markise.SensorType', 80);
         $this->EnableAction('Extra2Type');
 
-        $this->RegisterVariableInteger('Extra2Threshold', 'Zusatz 2 – Schwellwert', 'Markise.Extra2Threshold', 90);
+        $this->RegisterVariableInteger('Extra2Threshold', 'Zusatz 2 – Schwellwert', 'Markise.Threshold.Off', 90);
         $this->EnableAction('Extra2Threshold');
 
         // --- Statusvariablen ---
@@ -99,19 +99,23 @@ class Markisensteuerung_HomeMatic extends IPSModule
         if ($this->GetValue('WindThreshold') == 0) {
             $this->SetValue('WindThreshold', $this->ReadPropertyInteger('WindThresholdDefault'));
         }
+        // Zusatzsensor 1 initialisieren
         if ($this->GetValue('Extra1Type') === '') {
             $this->SetValue('Extra1Type', $this->ReadPropertyString('ExtraSensor1Type'));
         }
+        // Profil immer aktuell setzen (auch nach Neustart)
+        $this->ApplyThresholdProfile('Extra1Threshold', $this->GetValue('Extra1Type'));
         if ($this->GetValue('Extra1Threshold') == 0) {
             $this->SetValue('Extra1Threshold', $this->ReadPropertyInteger('ExtraSensor1ThresholdDefault'));
-            $this->UpdateExtra1Profile();
         }
+
+        // Zusatzsensor 2 initialisieren
         if ($this->GetValue('Extra2Type') === '') {
             $this->SetValue('Extra2Type', $this->ReadPropertyString('ExtraSensor2Type'));
         }
+        $this->ApplyThresholdProfile('Extra2Threshold', $this->GetValue('Extra2Type'));
         if ($this->GetValue('Extra2Threshold') == 0) {
             $this->SetValue('Extra2Threshold', $this->ReadPropertyInteger('ExtraSensor2ThresholdDefault'));
-            $this->UpdateExtra2Profile();
         }
 
         $this->RegisterActionScripts();
@@ -149,7 +153,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
             case 'Extra1Type':
                 $this->SetValue('Extra1Type', (string) $Value);
-                $this->UpdateExtra1Profile();
+                $this->ApplyThresholdProfile('Extra1Threshold', (string) $Value);
                 $this->LogMessage('Zusatz 1 Typ geändert auf ' . $Value, KL_MESSAGE);
                 break;
 
@@ -160,7 +164,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
             case 'Extra2Type':
                 $this->SetValue('Extra2Type', (string) $Value);
-                $this->UpdateExtra2Profile();
+                $this->ApplyThresholdProfile('Extra2Threshold', (string) $Value);
                 $this->LogMessage('Zusatz 2 Typ geändert auf ' . $Value, KL_MESSAGE);
                 break;
 
@@ -294,35 +298,21 @@ class Markisensteuerung_HomeMatic extends IPSModule
             IPS_SetVariableProfileAssociation('Markise.SensorType', 'boolean',     'Boolean (true = einfahren)', '', -1);
         }
 
-        // Schwellwert-Profile für Zusatzsensoren
-        $this->EnsureExtra1Profile($this->GetValue('Extra1Type'));
-        $this->EnsureExtra2Profile($this->GetValue('Extra2Type'));
+        // Alle möglichen Schwellwert-Profile vorab anlegen
+        foreach (['off', 'temperature', 'brightness', 'uv', 'boolean'] as $t) {
+            $this->EnsureThresholdProfile($t);
+        }
     }
 
-    /** Erstellt/aktualisiert das Schwellwert-Profil für Zusatzsensor 1 */
-    private function UpdateExtra1Profile()
+    /**
+     * Setzt das passende Schwellwert-Profil auf eine Threshold-Variable.
+     */
+    private function ApplyThresholdProfile(string $ident, string $type)
     {
-        $type = $this->GetValue('Extra1Type');
-        $this->EnsureExtra1Profile($type);
-        IPS_SetVariableCustomProfile($this->GetIDForIdent('Extra1Threshold'), $this->ThresholdProfileName($type));
-    }
-
-    /** Erstellt/aktualisiert das Schwellwert-Profil für Zusatzsensor 2 */
-    private function UpdateExtra2Profile()
-    {
-        $type = $this->GetValue('Extra2Type');
-        $this->EnsureExtra2Profile($type);
-        IPS_SetVariableCustomProfile($this->GetIDForIdent('Extra2Threshold'), $this->ThresholdProfileName($type));
-    }
-
-    private function EnsureExtra1Profile(string $type)
-    {
-        $this->EnsureThresholdProfile($type);
-    }
-
-    private function EnsureExtra2Profile(string $type)
-    {
-        $this->EnsureThresholdProfile($type);
+        $varID = $this->GetIDForIdent($ident);
+        if ($varID > 0) {
+            IPS_SetVariableCustomProfile($varID, $this->ThresholdProfileName($type));
+        }
     }
 
     /**
