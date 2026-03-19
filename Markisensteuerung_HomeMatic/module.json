@@ -3,9 +3,12 @@
     "name": "Markisensteuerung_HomeMatic",
     "type": 1,
     "vendor": "Christian Hagedorn",
-    "aliases": ["Markisensteuerung_HomeMatic"],
+    "aliases": ["Markisensteuerung HomeMatic IP"],
     "parentRequirements": [],
     "childRequirements": [],
     "implemented": [],
-    "prefix": "Markisensteuerung_HomeMatic"
+    "prefix": "Markise_HMIP",
+    "compatibility": {
+        "version": "8.0"
+    }
 }
