@@ -46,29 +46,33 @@
         },
         {
             "type": "ExpansionPanel",
-            "caption": "Zeitfenster",
+            "caption": "Zeitfenster (Standardwerte)",
             "items": [
                 {
-                    "type": "ValidationTextBox",
-                    "name": "StartTime",
-                    "caption": "Startzeit morgens (HH:MM)",
-                    "width": "120px"
+                    "type": "NumberSpinner",
+                    "name": "StartHourDefault",
+                    "caption": "Standard-Ausfahrzeit morgens (Stunde)",
+                    "minimum": 0,
+                    "maximum": 23,
+                    "suffix": ":00 Uhr"
                 },
                 {
-                    "type": "ValidationTextBox",
-                    "name": "EndTimeDefault",
-                    "caption": "Standard-Einfahrzeit abends (HH:MM)",
-                    "width": "120px"
+                    "type": "NumberSpinner",
+                    "name": "EndHourDefault",
+                    "caption": "Standard-Einfahrzeit abends (Stunde)",
+                    "minimum": 0,
+                    "maximum": 23,
+                    "suffix": ":00 Uhr"
                 },
                 {
                     "type": "Label",
-                    "caption": "Hinweis: Die Einfahrzeit kann zusätzlich im WebFront stündlich angepasst werden."
+                    "caption": "Hinweis: Beide Zeiten können zusätzlich direkt im WebFront stündlich angepasst werden."
                 }
             ]
         },
         {
             "type": "ExpansionPanel",
-            "caption": "Schwellenwerte",
+            "caption": "Schwellenwerte (Standardwerte)",
             "items": [
                 {
                     "type": "NumberSpinner",
@@ -81,7 +85,7 @@
                 },
                 {
                     "type": "Label",
-                    "caption": "Hinweis: Die Windgrenze kann zusätzlich im WebFront angepasst werden."
+                    "caption": "Hinweis: Die Windgrenze kann zusätzlich direkt im WebFront angepasst werden."
                 }
             ]
         }
