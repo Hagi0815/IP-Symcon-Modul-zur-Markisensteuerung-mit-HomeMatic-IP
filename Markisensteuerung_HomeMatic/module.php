@@ -225,10 +225,17 @@ class Markisensteuerung_HomeMatic extends IPSModule
             $threshold = $this->GetValue('Extra' . $n . 'Threshold');
 
             if ($sensorID > 0 && IPS_VariableExists($sensorID) && $type !== 'off') {
-                $val = (float) GetValue($sensorID);
-                if ($val >= $threshold) {
-                    $label = $this->SensorTypeLabel($type);
-                    $retractReasons[] = sprintf('%s %.1f >= %d', $label, $val, $threshold);
+                if ($type === 'boolean') {
+                    // Boolean: einfahren wenn Sensor true
+                    if ((bool) GetValue($sensorID)) {
+                        $retractReasons[] = $this->SensorTypeLabel($type) . ' aktiv';
+                    }
+                } else {
+                    $val = (float) GetValue($sensorID);
+                    if ($val >= $threshold) {
+                        $label = $this->SensorTypeLabel($type);
+                        $retractReasons[] = sprintf('%s %.1f >= %d', $label, $val, $threshold);
+                    }
                 }
             }
         }
@@ -284,6 +291,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
             IPS_SetVariableProfileAssociation('Markise.SensorType', 'temperature', 'Temperatur (°C)',    '', -1);
             IPS_SetVariableProfileAssociation('Markise.SensorType', 'brightness',  'Helligkeit (Lux)',  '', -1);
             IPS_SetVariableProfileAssociation('Markise.SensorType', 'uv',          'UV-Index',          '', -1);
+            IPS_SetVariableProfileAssociation('Markise.SensorType', 'boolean',     'Boolean (true = einfahren)', '', -1);
         }
 
         // Schwellwert-Profile für Zusatzsensoren
@@ -352,6 +360,12 @@ class Markisensteuerung_HomeMatic extends IPSModule
                 }
                 break;
 
+            case 'boolean':
+                // Boolean: kein Schwellwert nötig – Profil als Platzhalter
+                IPS_SetVariableProfileIcon($name, 'Information');
+                IPS_SetVariableProfileAssociation($name, 0, 'Bei true einfahren', '', -1);
+                break;
+
             default:
                 // 'off' – leeres Profil
                 IPS_SetVariableProfileIcon($name, 'Information');
@@ -366,6 +380,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
             'temperature' => 'Markise.Threshold.Temperature',
             'brightness'  => 'Markise.Threshold.Brightness',
             'uv'          => 'Markise.Threshold.UV',
+            'boolean'     => 'Markise.Threshold.Boolean',
             'off'         => 'Markise.Threshold.Off',
         ];
         return $map[$type] ?? 'Markise.Threshold.Off';
@@ -377,6 +392,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
             'temperature' => 'Temperatur',
             'brightness'  => 'Helligkeit',
             'uv'          => 'UV-Index',
+            'boolean'     => 'Boolean-Sensor',
         ];
         return $map[$type] ?? $type;
     }

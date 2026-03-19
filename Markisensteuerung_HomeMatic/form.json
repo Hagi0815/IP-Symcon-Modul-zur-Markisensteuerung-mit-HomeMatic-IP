@@ -27,10 +27,11 @@
                     "name": "ExtraSensor1Type",
                     "caption": "Typ",
                     "options": [
-                        { "caption": "Deaktiviert",      "value": "off"         },
-                        { "caption": "Temperatur (°C)",  "value": "temperature" },
-                        { "caption": "Helligkeit (Lux)", "value": "brightness"  },
-                        { "caption": "UV-Index",         "value": "uv"          }
+                        { "caption": "Deaktiviert",                  "value": "off"         },
+                        { "caption": "Temperatur (°C)",              "value": "temperature" },
+                        { "caption": "Helligkeit (Lux)",             "value": "brightness"  },
+                        { "caption": "UV-Index",                     "value": "uv"          },
+                        { "caption": "Boolean (true = einfahren)",   "value": "boolean"     }
                     ]
                 },
                 {
@@ -60,10 +61,11 @@
                     "name": "ExtraSensor2Type",
                     "caption": "Typ",
                     "options": [
-                        { "caption": "Deaktiviert",      "value": "off"         },
-                        { "caption": "Temperatur (°C)",  "value": "temperature" },
-                        { "caption": "Helligkeit (Lux)", "value": "brightness"  },
-                        { "caption": "UV-Index",         "value": "uv"          }
+                        { "caption": "Deaktiviert",                  "value": "off"         },
+                        { "caption": "Temperatur (°C)",              "value": "temperature" },
+                        { "caption": "Helligkeit (Lux)",             "value": "brightness"  },
+                        { "caption": "UV-Index",                     "value": "uv"          },
+                        { "caption": "Boolean (true = einfahren)",   "value": "boolean"     }
                     ]
                 },
                 {
