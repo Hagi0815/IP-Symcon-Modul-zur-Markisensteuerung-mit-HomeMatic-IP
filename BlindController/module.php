@@ -566,7 +566,17 @@ class Rolladensteuerung extends IPSModuleStrict
 
             case VM_UPDATE:
                 // Nur reagieren wenn sich der Wert tatsächlich geändert hat ($Data[1] = true)
-                $this->handleUpdateMessage($SenderID, $Data, true);
+                if (($Data[1] ?? null) === false) {
+                    break;
+                }
+
+                // BlindLevel-Variable: nur manuelle Bewegung erkennen, KEIN ControlBlind auslösen
+                if ($SenderID === $this->ReadPropertyInteger(self::PROP_BLINDLEVELID)) {
+                    $this->detectManualMovement();
+                    break;
+                }
+
+                $this->handleUpdateMessage($SenderID, $Data, false);
                 break;
         }
     }
@@ -658,6 +668,40 @@ class Rolladensteuerung extends IPSModuleStrict
     {
         $msg = date('H:i:s') . ' | Ausgelöst durch: ' . $triggerName . ' | Steuerung läuft...';
         $this->SetValue(self::VAR_IDENT_LAST_MESSAGE, $msg);
+    }
+
+    /**
+     * Erkennt ob der Rollladen manuell bewegt wurde und schreibt sofort in LAST_MESSAGE.
+     * Wird direkt bei VM_UPDATE der BlindLevel-Variable aufgerufen.
+     */
+    private function detectManualMovement(): void
+    {
+        $tsAutomatic = $this->ReadAttributeInteger(self::ATTR_TIMESTAMP_AUTOMATIC);
+        $blindLevelId = $this->ReadPropertyInteger(self::PROP_BLINDLEVELID);
+
+        if (!IPS_VariableExists($blindLevelId)) {
+            return;
+        }
+
+        $tsLastMovement = IPS_GetVariable($blindLevelId)['VariableChanged'];
+
+        // Karenzzeit: war die letzte Bewegung automatisch (innerhalb 5 Sek)?
+        if ($tsLastMovement <= strtotime('+5 sec', $tsAutomatic)) {
+            return; // Automatische Bewegung – ignorieren
+        }
+
+        // Manuelle Bewegung erkannt → sofort Status schreiben
+        $blindLevelAct = (float)GetValue($blindLevelId);
+        $this->profileBlindLevel = $this->GetPresentationInformation(self::PROP_BLINDLEVELID);
+        if ($this->profileBlindLevel === null) {
+            return;
+        }
+
+        $percentOpen = 100 - $this->calculateNormalizedLevel($blindLevelAct, $this->profileBlindLevel);
+        $msg = date('H:i:s') . ' | Manuelle Bedienung | Öffnung: ' . $percentOpen . '%';
+        $this->SetValue(self::VAR_IDENT_LAST_MESSAGE, $msg);
+
+        $this->Logger_Dbg(__FUNCTION__, 'Manuelle Bewegung erkannt: ' . $percentOpen . '% offen');
     }
 
     /**
@@ -1655,6 +1699,13 @@ class Rolladensteuerung extends IPSModuleStrict
             } elseif (IPS_EventExists($id)) {
                 $this->RegisterMessage($id, EM_UPDATE);
             }
+        }
+
+        // BlindLevel-Variable beobachten um manuelle Bewegungen sofort zu erkennen
+        // (löst KEINEN ControlBlind-Lauf aus, nur LAST_MESSAGE-Update)
+        $blindLevelId = $this->ReadPropertyInteger(self::PROP_BLINDLEVELID);
+        if (IPS_VariableExists($blindLevelId)) {
+            $this->RegisterMessage($blindLevelId, VM_UPDATE);
         }
         // VM_CHANGEPROFILEACTION nicht mehr registrieren – kein Zyklus durch Aktor-Rückmeldung
     }
