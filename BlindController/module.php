@@ -556,6 +556,7 @@ class Rolladensteuerung extends IPSModuleStrict
             case EM_UPDATE:
                 // Wochenplan-Schaltpunkt: nur Steuerungslauf auslösen, KEIN SetInstanceStatusAndTimerEvent
                 if ($this->GetValue(self::VAR_IDENT_ACTIVATED) && IPS_GetKernelRunlevel() === KR_READY) {
+                    $this->setTriggerStatus('Wochenplan');
                     $this->RegisterOnceTimer(
                         'BlindControlTimer_ControlBlind',
                         sprintf('BLC_ControlBlind(%s, true);', $this->InstanceID)
@@ -603,9 +604,60 @@ class Rolladensteuerung extends IPSModuleStrict
         );
 
         if (IPS_GetKernelRunlevel() === KR_READY) {
+            // Auslöser-Name ermitteln und sofort in Status schreiben
+            $triggerName = $this->getTriggerName($SenderID);
+            $this->setTriggerStatus($triggerName);
+
             $considerDeactivation = $isTriggerSource ? 'false' : 'true';
             $this->RegisterOnceTimer('BlindControlTimer_ControlBlind',sprintf('BLC_ControlBlind(%s, %s);', $this->InstanceID, $considerDeactivation));
         }
+    }
+
+    /**
+     * Ermittelt einen lesbaren Namen für die auslösende Variable/Ereignis.
+     */
+    private function getTriggerName(int $senderID): string
+    {
+        // Bekannte Properties mit lesbaren Namen
+        $knownSources = [
+            self::PROP_ISDAYINDICATORID       => 'IsDay',
+            self::PROP_BRIGHTNESSID           => 'Helligkeit',
+            self::PROP_BRIGHTNESSTHRESHOLDID  => 'Helligkeitsschwelle',
+            self::PROP_HOLIDAYINDICATORID     => 'Feiertag',
+            self::PROP_CONTACTOPEN1ID         => 'Kontakt 1 (Öffnen)',
+            self::PROP_CONTACTOPEN2ID         => 'Kontakt 2 (Öffnen)',
+            self::PROP_CONTACTCLOSE1ID        => 'Kontakt 1 (Schließen)',
+            self::PROP_CONTACTCLOSE2ID        => 'Kontakt 2 (Schließen)',
+            self::PROP_EMERGENCYCONTACTID     => 'Notfallkontakt',
+            self::PROP_ACTIVATORIDSHADOWINGBRIGHTNESS    => 'Beschattung Helligkeit',
+            self::PROP_ACTIVATORIDSHADOWINGBYSUNPOSITION => 'Beschattung Sonnenstand',
+        ];
+
+        foreach ($knownSources as $prop => $label) {
+            if ($this->ReadPropertyInteger($prop) === $senderID) {
+                // Objektnamen der Variable anhängen falls verfügbar
+                if (IPS_ObjectExists($senderID)) {
+                    return $label . ' (' . IPS_GetObject($senderID)['ObjectName'] . ')';
+                }
+                return $label;
+            }
+        }
+
+        // Fallback: Objektname aus IPS
+        if (IPS_ObjectExists($senderID)) {
+            return IPS_GetObject($senderID)['ObjectName'];
+        }
+
+        return sprintf('Variable #%d', $senderID);
+    }
+
+    /**
+     * Schreibt den Auslöser sofort in die Status-Variable (vor dem eigentlichen Steuerungslauf).
+     */
+    private function setTriggerStatus(string $triggerName): void
+    {
+        $msg = date('H:i:s') . ' | Ausgelöst durch: ' . $triggerName . ' | Steuerung läuft...';
+        $this->SetValue(self::VAR_IDENT_LAST_MESSAGE, $msg);
     }
 
     /**
@@ -892,6 +944,13 @@ class Rolladensteuerung extends IPSModuleStrict
         $this->applyLightControl();
 
         // --- 8. Status-Meldung aktualisieren ---
+        // Auslöser aus vorheriger Meldung extrahieren (wurde bereits beim Triggern gesetzt)
+        $prevMsg     = $this->GetValue(self::VAR_IDENT_LAST_MESSAGE);
+        $triggerPart = '';
+        if (preg_match('/Ausgelöst durch: (.+?) \|/', $prevMsg, $m)) {
+            $triggerPart = ' | Auslöser: ' . $m[1];
+        }
+
         // Anzeige: 0% = geschlossen, 100% = geöffnet (invertiert zu percentClose)
         $statusMsg = date('H:i:s') . ' | ';
         $statusMsg .= $Hinweis !== '' ? $Hinweis : ($bNoMove ? 'Keine Bewegung (Sperre)' : 'Keine Änderung');
@@ -899,6 +958,7 @@ class Rolladensteuerung extends IPSModuleStrict
         if ($slatsLevel !== -1) {
             $statusMsg .= sprintf(' / %d%%', 100 - $slatsLevel);
         }
+        $statusMsg .= $triggerPart;
         $this->SetValue(self::VAR_IDENT_LAST_MESSAGE, $statusMsg);
 
         //im Notfall wird die Automatik NICHT automatisch deaktiviert – nur Benutzer/Boolean darf deaktivieren
