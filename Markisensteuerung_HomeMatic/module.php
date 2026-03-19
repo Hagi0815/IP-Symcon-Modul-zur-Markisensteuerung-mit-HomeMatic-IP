@@ -9,7 +9,7 @@
  * Windgrenze und Abend-Einfahrzeit sind direkt im WebFront einstellbar.
  *
  * @author  Christian Hagedorn
- * @version 1.2
+ * @version 1.3
  */
 class Markisensteuerung_HomeMatic extends IPSModule
 {
@@ -32,6 +32,9 @@ class Markisensteuerung_HomeMatic extends IPSModule
         $this->RegisterPropertyString('EndTimeDefault', '20:00');
         $this->RegisterPropertyFloat('WindThresholdDefault', 10.0);
 
+        // --- Profil für Einfahrzeit ZUERST anlegen ---
+        $this->RegisterProfileHour();
+
         // --- Steuerungsvariablen ---
         $this->RegisterVariableBoolean('AutoActive', 'Automatik aktiv', '~Switch', 10);
         $this->EnableAction('AutoActive');
@@ -43,7 +46,6 @@ class Markisensteuerung_HomeMatic extends IPSModule
         $this->RegisterVariableFloat('WindThreshold', 'Windgrenze (km/h)', '', 30);
         $this->EnableAction('WindThreshold');
 
-        // Einfahrzeit als Integer (Stunde 0-23), Profil wird in ApplyChanges angelegt
         $this->RegisterVariableInteger('EndHour', 'Einfahren ab Uhrzeit', 'Markise.EndHour', 40);
         $this->EnableAction('EndHour');
 
@@ -59,15 +61,10 @@ class Markisensteuerung_HomeMatic extends IPSModule
     {
         parent::ApplyChanges();
 
-        // Stunden-Profil anlegen falls noch nicht vorhanden
-        if (!IPS_VariableProfileExists('Markise.EndHour')) {
-            IPS_CreateVariableProfile('Markise.EndHour', 1); // 1 = Integer
-            IPS_SetVariableProfileValues('Markise.EndHour', 0, 23, 1);
-            IPS_SetVariableProfileText('Markise.EndHour', '', ':00 Uhr');
-            IPS_SetVariableProfileIcon('Markise.EndHour', 'Clock');
-        }
+        // Profil sicherstellen (falls nach Update gelöscht)
+        $this->RegisterProfileHour();
 
-        // Standardwerte setzen wenn Variablen noch initialisiert werden
+        // Standardwerte setzen beim ersten Start
         if ($this->GetValue('WindThreshold') == 0.0) {
             $this->SetValue('WindThreshold', $this->ReadPropertyFloat('WindThresholdDefault'));
         }
@@ -184,6 +181,20 @@ class Markisensteuerung_HomeMatic extends IPSModule
     // -------------------------------------------------------------------------
     // Private Hilfsmethoden
     // -------------------------------------------------------------------------
+
+    /**
+     * Legt das Variablenprofil für die Einfahrstunde an (0–23 Uhr).
+     * Wird in Create() und ApplyChanges() aufgerufen.
+     */
+    private function RegisterProfileHour()
+    {
+        if (!IPS_VariableProfileExists('Markise.EndHour')) {
+            IPS_CreateVariableProfile('Markise.EndHour', 1); // 1 = Integer
+            IPS_SetVariableProfileValues('Markise.EndHour', 0, 23, 1);
+            IPS_SetVariableProfileText('Markise.EndHour', '', ':00 Uhr');
+            IPS_SetVariableProfileIcon('Markise.EndHour', 'Clock');
+        }
+    }
 
     /**
      * Setzt die Aktorposition (Level oder Boolean).
