@@ -122,6 +122,16 @@ class Markisensteuerung_HomeMatic extends IPSModule
         $this->SetTimerInterval('CheckTimer', 300000);
     }
 
+
+    /**
+     * Gibt den Inhalt der form.json zurück.
+     * Pflicht bei type=3 (Device), damit die Konfigurationsseite geladen wird.
+     */
+    public function GetConfigurationForm(): string
+    {
+        return file_get_contents(__DIR__ . '/form.json');
+    }
+
     public function RequestAction($Ident, $Value)
     {
         switch ($Ident) {
