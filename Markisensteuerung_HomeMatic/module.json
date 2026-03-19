@@ -1,7 +1,7 @@
 {
     "id": "{A1B2C3D4-5678-1234-ABCD-9876543210AB}",
     "name": "Markisensteuerung_HomeMatic",
-    "type": 3,
+    "type": 1,
     "vendor": "Christian Hagedorn",
     "aliases": ["Markisensteuerung_HomeMatic"],
     "parentRequirements": [],
