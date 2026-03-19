@@ -82,7 +82,7 @@
         {
             "type": "Button",
             "caption": "Jetzt prüfen",
-            "onClick": "Markise_HMIP_Check($id);"
+            "onClick": "IPS_RequestAction($id, 'Check', '');"
         }
     ],
     "status": [
