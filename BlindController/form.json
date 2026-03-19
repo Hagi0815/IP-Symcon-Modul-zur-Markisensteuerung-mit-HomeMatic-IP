@@ -1,0 +1,1735 @@
+{
+    "elements": [
+        {
+            "type": "SelectVariable",
+            "name": "BlindLevelID",
+            "caption": "Blind Level ID",
+            "requiredAction": 1,
+            "validVariableTypes": [
+                1,
+                2
+            ]
+        },
+        {
+            "type": "SelectVariable",
+            "name": "SlatsLevelID",
+            "caption": "Slats Level ID (optional)",
+            "requiredAction": 1,
+            "validVariableTypes": [
+                1,
+                2
+            ],
+            "onChange": "IPS_RequestAction($id, 'SlatsLevelID', $SlatsLevelID);"
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Change of Night and Day",
+            "items": [
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Time Schedule",
+                    "items": [
+                        {
+                            "type": "SelectEvent",
+                            "name": "WeeklyTimeTableEventID",
+                            "caption": "Weekly Timetable Event ID"
+                        },
+                        {
+                            "type": "ExpansionPanel",
+                            "caption": "Consider Holiday (optional)",
+                            "items": [
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "SelectVariable",
+                                            "name": "HolidayIndicatorID",
+                                            "caption": "Holiday Indicator ID",
+                                            "validVariableTypes": [
+                                                0
+                                            ],
+                                            "onChange": "IPS_RequestAction($id, 'HolidayIndicatorID', $HolidayIndicatorID);"
+                                        },
+                                        {
+                                            "type": "Select",
+                                            "name": "DayUsedWhenHoliday",
+                                            "caption": "Used Weekday when Holiday",
+                                            "options": [
+                                                {
+                                                    "caption": "- not used -",
+                                                    "value": 0
+                                                },
+                                                {
+                                                    "caption": "Monday",
+                                                    "value": 1
+                                                },
+                                                {
+                                                    "caption": "Tuesday",
+                                                    "value": 2
+                                                },
+                                                {
+                                                    "caption": "Wednesday",
+                                                    "value": 3
+                                                },
+                                                {
+                                                    "caption": "Thursday",
+                                                    "value": 4
+                                                },
+                                                {
+                                                    "caption": "Friday",
+                                                    "value": 5
+                                                },
+                                                {
+                                                    "caption": "Saturday",
+                                                    "value": 6
+                                                },
+                                                {
+                                                    "caption": "Sunday",
+                                                    "value": 7
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ExpansionPanel",
+                            "caption": "Overruling Up and Down Times (optional)",
+                            "items": [
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "SelectVariable",
+                                            "name": "WakeUpTimeID",
+                                            "caption": "Wake-Up Time ID",
+                                            "validVariableTypes": [
+                                                3
+                                            ],
+                                            "onChange": "IPS_RequestAction($id,'WakeUpTimeID',$WakeUpTimeID);"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "WakeUpTimeOffset",
+                                            "caption": "Wake-Up Time Offset",
+                                            "suffix": "Minutes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "SelectVariable",
+                                            "name": "BedTimeID",
+                                            "caption": "Bedtime ID",
+                                            "validVariableTypes": [
+                                                3
+                                            ],
+                                            "onChange": "IPS_RequestAction($id,'BedTimeID',$BedTimeID);"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "BedTimeOffset",
+                                            "caption": "Bedtime Offset",
+                                            "suffix": "Minutes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "ActivatedIndividualNightLevels",
+                                    "caption": "The blind should not be closed completely at night.",
+                                    "onChange": "IPS_RequestAction($id,'ActivatedIndividualNightLevels',$ActivatedIndividualNightLevels);"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "NightBlindLevel",
+                                    "caption": "Blind Level",
+                                    "digits": "2"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "NightSlatsLevel",
+                                    "caption": "Slats Level",
+                                    "digits": "2"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "ActivatedIndividualDayLevels",
+                                    "caption": "The blind should not be opened completely at day.",
+                                    "onChange": "IPS_RequestAction($id,'ActivatedIndividualDayLevels',$ActivatedIndividualDayLevels);"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "DayBlindLevel",
+                                    "caption": "Blind Level",
+                                    "digits": "2"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "DaySlatsLevel",
+                                    "caption": "Slats Level",
+                                    "digits": "2"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Is Day Detection (optional)",
+                    "items": [
+                        {
+                            "type": "SelectVariable",
+                            "name": "IsDayIndicatorID",
+                            "validVariableTypes": [
+                                0
+                            ],
+                            "caption": "Is Day Indicator ID"
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "If no 'Is Day' indicator is set, the day is determined by the brightness:"
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "BrightnessID",
+                                    "caption": "Brightness ID",
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ],
+                                    "onChange": "IPS_RequestAction($id,'BrightnessID',$BrightnessID);"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "BrightnessAvgMinutes",
+                                    "caption": "Average of the last minutes",
+                                    "suffix": "Minutes",
+                                    "minimum": 0,
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ]
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "BrightnessThresholdID",
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Brightness Threshold ID"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "The determined Day Start and/or End Time can also be overridden"
+                        },
+                        {
+                            "type": "RowLayout",
+                            "caption": "Overruling Day Start and/or End Time (optional)",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "DayStartID",
+                                    "validVariableTypes": [
+                                        3
+                                    ],
+                                    "caption": "Start of the day ID"
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "DayEndID",
+                                    "validVariableTypes": [
+                                        3
+                                    ],
+                                    "caption": "End of the day ID"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "RowLayout",
+                    "items": [
+                        {
+                            "type": "NumberSpinner",
+                            "name": "DelayTimeDayNightChange",
+                            "caption": "Delay Time of Day Night Change",
+                            "suffix": "Seconds",
+                            "minimum": 0
+                        },
+                        {
+                            "type": "CheckBox",
+                            "name": "DelayTimeDayNightChangeIsRandomly",
+                            "caption": "Delay Time of Day Night Change is randomly"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Shadowing (optional)",
+            "items": [
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Shadowing According to Sun Position (optional)",
+                    "items": [
+                        {
+                            "type": "SelectVariable",
+                            "name": "ActivatorIDShadowingBySunPosition",
+                            "validVariableTypes": [
+                                0,
+                                1,
+                                2
+                            ],
+                            "caption": "Activator ID"
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "Define the sun position indicators"
+                        },
+                        {
+                            "type": "SelectVariable",
+                            "name": "AzimuthID",
+                            "validVariableTypes": [
+                                2
+                            ],
+                            "caption": "Azimuth ID"
+                        },
+                        {
+                            "type": "SelectVariable",
+                            "name": "AltitudeID",
+                            "validVariableTypes": [
+                                2
+                            ],
+                            "caption": "Altitude ID"
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "Define the range of azimuth and altitude for shadowing:"
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "AzimuthFrom",
+                                    "caption": "From Azimuth",
+                                    "digits": "1",
+                                    "minimum": 0,
+                                    "maximum": 360,
+                                    "suffix": "°"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "AzimuthTo",
+                                    "caption": "To Azimuth",
+                                    "digits": "1",
+                                    "minimum": 0,
+                                    "maximum": 360,
+                                    "suffix": "°"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "AltitudeFrom",
+                                    "caption": "From Altitude",
+                                    "digits": "1",
+                                    "minimum": -90,
+                                    "maximum": 90,
+                                    "suffix": "°"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "AltitudeTo",
+                                    "caption": "To Altitude",
+                                    "digits": "1",
+                                    "minimum": -90,
+                                    "maximum": 90,
+                                    "suffix": "°"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "Define a brightness sensor if the brightness should be considered"
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "BrightnessIDShadowingBySunPosition",
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Brightness ID",
+                                    "onChange": "IPS_RequestAction($id,'BrightnessIDShadowingBySunPosition',$BrightnessIDShadowingBySunPosition);"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "BrightnessAvgMinutesShadowingBySunPosition",
+                                    "caption": "Average of the last minutes",
+                                    "suffix": "Minutes",
+                                    "minimum": 0
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "BrightnessThresholdIDShadowingBySunPosition",
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Brightness Threshold ID"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "Define an additional temperature sensor when the outdoor temperature should be considered"
+                        },
+                        {
+                            "type": "SelectVariable",
+                            "name": "TemperatureIDShadowingBySunPosition",
+                            "validVariableTypes": [
+                                1,
+                                2
+                            ],
+                            "caption": "Temperature ID"
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "Two alternative methods are available for determining the degree of shadowing.\\nThe simple variant calculates the height using the specified minimum and maximum position. It is only suitable for vertical window surfaces.\\nThe more precise variant calculates the height based on the orientation of the window, the inclination of the window and the specified depth that the sun is allowed to shine through the window. It is also suitable for inclined windows."
+                        },
+                        {
+                            "type": "ExpansionPanel",
+                            "caption": "Determination of the degree of shadowing - simple variant, only suitable for facade windows (alternative)",
+                            "items": [
+                                {
+                                    "type": "Label",
+                                    "caption": "Define two extreme sun positions (altitudes) and their associated shutter positions. From these values, the appropriate shading position is calculated to the current altitude."
+                                },
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "LowSunPositionAltitude",
+                                            "caption": "Low Sun Position (Altitude)",
+                                            "digits": "1",
+                                            "minimum": 0,
+                                            "maximum": 90,
+                                            "suffix": "°"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "LowSunPositionBlindLevel",
+                                            "caption": "Low Sun Position (Blind Level)",
+                                            "digits": "2"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "LowSunPositionSlatsLevel",
+                                            "caption": "Low Sun Position (Slats Level)",
+                                            "digits": "2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "HighSunPositionAltitude",
+                                            "caption": "High Sun Position (Altitude)",
+                                            "digits": "1",
+                                            "minimum": 0,
+                                            "maximum": 90,
+                                            "suffix": "°"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "HighSunPositionBlindLevel",
+                                            "caption": "High Sun Position (Blind Level)",
+                                            "digits": "2"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "HighSunPositionSlatsLevel",
+                                            "caption": "High Sun Position (Slats Level)",
+                                            "digits": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ExpansionPanel",
+                            "caption": "Determination of the degree of shadowing - more precise variant, also suitable for inclined windows (alternative)",
+                            "items": [
+                                {
+                                    "type": "Label",
+                                    "caption": "It has to be specified how deep the sun may shine into the room (measured from the roller shutter guide). The appropriate shading position is then calculated based on the window position, the window height, the minimum and maximum shadow-relevant position and the current sun altitude and azimuth.\n\nThis variant is used when the depth is set."
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "DepthSunLight",
+                                    "caption": "Maximum depth of sunlight",
+                                    "digits": "0",
+                                    "suffix": " cm"
+                                },
+                                {
+                                    "type": "Label",
+                                    "caption": "Window position and height"
+                                },
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "WindowOrientation",
+                                            "caption": "Orientation of the window (South = 180°)",
+                                            "digits": "0",
+                                            "minimum": 0,
+                                            "suffix": "°"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "WindowsSlope",
+                                            "caption": "Slope of the window (vertical = 90°)",
+                                            "digits": "0",
+                                            "maximum": 180,
+                                            "minimum": 0,
+                                            "suffix": "°"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "WindowHeight",
+                                            "caption": "Height of the window (glass inside the frame)",
+                                            "digits": "0",
+                                            "minimum": 0,
+                                            "suffix": " cm"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "ParapetHeight",
+                                            "caption": "Height of the Parapet (distance from glas to shadow level)",
+                                            "digits": "0",
+                                            "minimum": 0,
+                                            "suffix": " cm"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Label",
+                                    "caption": "Shading positions"
+                                },
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "MinimumShadeRelevantBlindLevel",
+                                            "caption": "Minimum shade relevant blind level",
+                                            "digits": "2"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "HalfShadeRelevantBlindLevel",
+                                            "caption": "Half shade relevant blind level",
+                                            "digits": "2"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "MaximumShadeRelevantBlindLevel",
+                                            "caption": "Maximum shade relevant blind level",
+                                            "digits": "2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "RowLayout",
+                                    "items": [
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "MinimumShadeRelevantSlatsLevel",
+                                            "caption": "Minimum shade relevant slats level",
+                                            "digits": "2"
+                                        },
+                                        {
+                                            "type": "NumberSpinner",
+                                            "name": "MaximumShadeRelevantSlatsLevel",
+                                            "caption": "Maximum shade relevant slats level",
+                                            "digits": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Shadowing According to Brightness (optional)",
+                    "items": [
+                        {
+                            "type": "SelectVariable",
+                            "name": "ActivatorIDShadowingBrightness",
+                            "validVariableTypes": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "caption": "Activator ID"
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "Define the brightness indicator"
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "BrightnessIDShadowingBrightness",
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Brightness ID",
+                                    "onChange": "IPS_RequestAction($id,'BrightnessIDShadowingBrightness',$BrightnessIDShadowingBrightness);"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "BrightnessAvgMinutesShadowingBrightness",
+                                    "caption": "Average of the last minutes",
+                                    "suffix": "Minutes",
+                                    "minimum": 0
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Label",
+                            "caption": "Define up to two different levels"
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "ThresholdIDLessBrightness",
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Threshold less brightness ID"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "BlindLevelLessBrightnessShadowingBrightness",
+                                    "caption": "Blind Level at less brightness",
+                                    "digits": "2"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "SlatsLevelLessBrightnessShadowingBrightness",
+                                    "caption": "Slats Level at less brightness",
+                                    "digits": "2"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "ThresholdIDHighBrightness",
+                                    "validVariableTypes": [
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Threshold high brightness ID"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "BlindLevelHighBrightnessShadowingBrightness",
+                                    "caption": "Blind Level at high brightness",
+                                    "digits": "2"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "SlatsLevelHighBrightnessShadowingBrightness",
+                                    "caption": "Slats Level at high brightness",
+                                    "digits": "2"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Contacts (optional)",
+            "items": [
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Contacts to Close the Blind (optional)",
+                    "items": [
+                        {
+                            "type": "Label",
+                            "caption": "Define up to two contacts/variables. The blind is closed immediately to the given maximum height if one of the contacts are open."
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "ContactClose1ID",
+                                    "validVariableTypes": [
+                                        0,
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Contact 1 ID"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactCloseLevel1",
+                                    "caption": "Maximum height when the contact is open",
+                                    "digits": "2"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactCloseSlatsLevel1",
+                                    "caption": "Maximum slats position when the contact is open",
+                                    "digits": "2"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "ContactClose2ID",
+                                    "validVariableTypes": [
+                                        0,
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Contact 2 ID"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactCloseLevel2",
+                                    "caption": "Maximum height when the contact is open",
+                                    "digits": "2"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactCloseSlatsLevel2",
+                                    "caption": "Maximum slats position when the contact is open",
+                                    "digits": "2"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Contacts to Open the Blind (optional)",
+                    "items": [
+                        {
+                            "type": "Label",
+                            "caption": "Define up to two contacts/variables. The blind is opened immediately to the given minimum height if one of the contacts are open."
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "ContactOpen1ID",
+                                    "validVariableTypes": [
+                                        0,
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Kontakt 1 ID"
+                                },
+                                {
+                                    "type": "CheckBox",
+                                    "name": "ContactOpen1UseInteger",
+                                    "caption": "Integer-Modus (gekippt/geöffnet)"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpen1TiltValue",
+                                    "caption": "Wert = gekippt",
+                                    "digits": 0
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpen1TiltBlindLevel",
+                                    "caption": "Position bei gekippt",
+                                    "digits": 2
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpen1OpenValue",
+                                    "caption": "Wert = geöffnet",
+                                    "digits": 0
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpenLevel1",
+                                    "caption": "Position bei geöffnet",
+                                    "digits": 2
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "ContactOpen2ID",
+                                    "validVariableTypes": [
+                                        0,
+                                        1,
+                                        2
+                                    ],
+                                    "caption": "Kontakt 2 ID"
+                                },
+                                {
+                                    "type": "CheckBox",
+                                    "name": "ContactOpen2UseInteger",
+                                    "caption": "Integer-Modus (gekippt/geöffnet)"
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpen2TiltValue",
+                                    "caption": "Wert = gekippt",
+                                    "digits": 0
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpen2TiltBlindLevel",
+                                    "caption": "Position bei gekippt",
+                                    "digits": 2
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpen2OpenValue",
+                                    "caption": "Wert = geöffnet",
+                                    "digits": 0
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "ContactOpenLevel2",
+                                    "caption": "Position bei geöffnet",
+                                    "digits": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "ContactsToCloseHaveHigherPriority",
+                    "caption": "Contacts to close the blind have a higher priority than the ones to open"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "BalconyDoor",
+                    "caption": "Balkontür: Fenstergriff hat immer Vorrang (alternativ: Vorrang über Priorität unten setzen)"
+                },
+                {
+                    "type": "Label",
+                    "caption": "── Vorrang-Einstellung ─────────────────────────────────────────────"
+                },
+                {
+                    "type": "RowLayout",
+                    "items": [
+                        {
+                            "type": "Select",
+                            "name": "PriorityModeMorning",
+                            "caption": "Vorrang morgens (Rollladen fährt auf)",
+                            "options": [
+                                {
+                                    "caption": "Wochenplan (Uhrzeit entscheidet)",
+                                    "value": 0
+                                },
+                                {
+                                    "caption": "Sonnenaufgang (Helligkeit/IsDay hat Vorrang)",
+                                    "value": 1
+                                },
+                                {
+                                    "caption": "Fenstergriff (Kontakt überschreibt alles)",
+                                    "value": 2
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Select",
+                            "name": "PriorityModeEvening",
+                            "caption": "Vorrang abends (Rollladen fährt zu)",
+                            "options": [
+                                {
+                                    "caption": "Wochenplan (Uhrzeit entscheidet)",
+                                    "value": 0
+                                },
+                                {
+                                    "caption": "Sonnenuntergang (Helligkeit/IsDay hat Vorrang)",
+                                    "value": 1
+                                },
+                                {
+                                    "caption": "Fenstergriff (Kontakt überschreibt alles)",
+                                    "value": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Lichtsteuerung Kontakt 1 (optional)",
+                    "items": [
+                        {
+                            "type": "Label",
+                            "caption": "Für jeden Zustand des Kontakts 1 kann eine Variable gesetzt werden."
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact1LightConditionVar",
+                                    "caption": "Freigabe (Boolean, optional): Lichtsteuerung nur aktiv wenn true",
+                                    "validVariableTypes": [
+                                        0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "Contact1LightClosedEnabled",
+                                    "caption": "Geschlossen: aktiv",
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightClosedEnabled', $Contact1LightClosedEnabled);"
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact1LightClosedVar",
+                                    "caption": "Variable",
+                                    "validVariableTypes": [
+                                        0,
+                                        3,
+                                        2
+                                    ],
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightClosedVar', $Contact1LightClosedVar);"
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightClosedType",
+                                    "caption": "Typ",
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightClosedType', $Contact1LightClosedType);",
+                                    "options": [
+                                        {
+                                            "caption": "Boolean",
+                                            "value": "boolean"
+                                        },
+                                        {
+                                            "caption": "String",
+                                            "value": "string"
+                                        },
+                                        {
+                                            "caption": "Float",
+                                            "value": "float"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightClosedBool",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "true",
+                                            "value": 1
+                                        },
+                                        {
+                                            "caption": "false",
+                                            "value": 0
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightClosedString",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "-- Variable auswählen --",
+                                            "value": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "Contact1LightClosedFloat",
+                                    "caption": "Wert",
+                                    "digits": 2,
+                                    "visible": false
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "Contact1LightTiltEnabled",
+                                    "caption": "Gekippt: aktiv",
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightTiltEnabled', $Contact1LightTiltEnabled);"
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact1LightTiltVar",
+                                    "caption": "Variable",
+                                    "validVariableTypes": [
+                                        0,
+                                        3,
+                                        2
+                                    ],
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightTiltVar', $Contact1LightTiltVar);"
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightTiltType",
+                                    "caption": "Typ",
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightTiltType', $Contact1LightTiltType);",
+                                    "options": [
+                                        {
+                                            "caption": "Boolean",
+                                            "value": "boolean"
+                                        },
+                                        {
+                                            "caption": "String",
+                                            "value": "string"
+                                        },
+                                        {
+                                            "caption": "Float",
+                                            "value": "float"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightTiltBool",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "true",
+                                            "value": 1
+                                        },
+                                        {
+                                            "caption": "false",
+                                            "value": 0
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightTiltString",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "-- Variable auswählen --",
+                                            "value": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "Contact1LightTiltFloat",
+                                    "caption": "Wert",
+                                    "digits": 2,
+                                    "visible": false
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "Contact1LightOpenEnabled",
+                                    "caption": "Geöffnet: aktiv",
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightOpenEnabled', $Contact1LightOpenEnabled);"
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact1LightOpenVar",
+                                    "caption": "Variable",
+                                    "validVariableTypes": [
+                                        0,
+                                        3,
+                                        2
+                                    ],
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightOpenVar', $Contact1LightOpenVar);"
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightOpenType",
+                                    "caption": "Typ",
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact1LightOpenType', $Contact1LightOpenType);",
+                                    "options": [
+                                        {
+                                            "caption": "Boolean",
+                                            "value": "boolean"
+                                        },
+                                        {
+                                            "caption": "String",
+                                            "value": "string"
+                                        },
+                                        {
+                                            "caption": "Float",
+                                            "value": "float"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightOpenBool",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "true",
+                                            "value": 1
+                                        },
+                                        {
+                                            "caption": "false",
+                                            "value": 0
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact1LightOpenString",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "-- Variable auswählen --",
+                                            "value": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "Contact1LightOpenFloat",
+                                    "caption": "Wert",
+                                    "digits": 2,
+                                    "visible": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "ExpansionPanel",
+                    "caption": "Lichtsteuerung Kontakt 2 (optional)",
+                    "items": [
+                        {
+                            "type": "Label",
+                            "caption": "Für jeden Zustand des Kontakts 2 kann eine Variable gesetzt werden."
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact2LightConditionVar",
+                                    "caption": "Freigabe (Boolean, optional): Lichtsteuerung nur aktiv wenn true",
+                                    "validVariableTypes": [
+                                        0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "Contact2LightClosedEnabled",
+                                    "caption": "Geschlossen: aktiv",
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightClosedEnabled', $Contact2LightClosedEnabled);"
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact2LightClosedVar",
+                                    "caption": "Variable",
+                                    "validVariableTypes": [
+                                        0,
+                                        3,
+                                        2
+                                    ],
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightClosedVar', $Contact2LightClosedVar);"
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightClosedType",
+                                    "caption": "Typ",
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightClosedType', $Contact2LightClosedType);",
+                                    "options": [
+                                        {
+                                            "caption": "Boolean",
+                                            "value": "boolean"
+                                        },
+                                        {
+                                            "caption": "String",
+                                            "value": "string"
+                                        },
+                                        {
+                                            "caption": "Float",
+                                            "value": "float"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightClosedBool",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "true",
+                                            "value": 1
+                                        },
+                                        {
+                                            "caption": "false",
+                                            "value": 0
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightClosedString",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "-- Variable auswählen --",
+                                            "value": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "Contact2LightClosedFloat",
+                                    "caption": "Wert",
+                                    "digits": 2,
+                                    "visible": false
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "Contact2LightTiltEnabled",
+                                    "caption": "Gekippt: aktiv",
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightTiltEnabled', $Contact2LightTiltEnabled);"
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact2LightTiltVar",
+                                    "caption": "Variable",
+                                    "validVariableTypes": [
+                                        0,
+                                        3,
+                                        2
+                                    ],
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightTiltVar', $Contact2LightTiltVar);"
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightTiltType",
+                                    "caption": "Typ",
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightTiltType', $Contact2LightTiltType);",
+                                    "options": [
+                                        {
+                                            "caption": "Boolean",
+                                            "value": "boolean"
+                                        },
+                                        {
+                                            "caption": "String",
+                                            "value": "string"
+                                        },
+                                        {
+                                            "caption": "Float",
+                                            "value": "float"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightTiltBool",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "true",
+                                            "value": 1
+                                        },
+                                        {
+                                            "caption": "false",
+                                            "value": 0
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightTiltString",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "-- Variable auswählen --",
+                                            "value": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "Contact2LightTiltFloat",
+                                    "caption": "Wert",
+                                    "digits": 2,
+                                    "visible": false
+                                }
+                            ]
+                        },
+                        {
+                            "type": "RowLayout",
+                            "items": [
+                                {
+                                    "type": "CheckBox",
+                                    "name": "Contact2LightOpenEnabled",
+                                    "caption": "Geöffnet: aktiv",
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightOpenEnabled', $Contact2LightOpenEnabled);"
+                                },
+                                {
+                                    "type": "SelectVariable",
+                                    "name": "Contact2LightOpenVar",
+                                    "caption": "Variable",
+                                    "validVariableTypes": [
+                                        0,
+                                        3,
+                                        2
+                                    ],
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightOpenVar', $Contact2LightOpenVar);"
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightOpenType",
+                                    "caption": "Typ",
+                                    "visible": false,
+                                    "onChange": "IPS_RequestAction($id, 'Contact2LightOpenType', $Contact2LightOpenType);",
+                                    "options": [
+                                        {
+                                            "caption": "Boolean",
+                                            "value": "boolean"
+                                        },
+                                        {
+                                            "caption": "String",
+                                            "value": "string"
+                                        },
+                                        {
+                                            "caption": "Float",
+                                            "value": "float"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightOpenBool",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "true",
+                                            "value": 1
+                                        },
+                                        {
+                                            "caption": "false",
+                                            "value": 0
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Select",
+                                    "name": "Contact2LightOpenString",
+                                    "caption": "Wert",
+                                    "visible": false,
+                                    "options": [
+                                        {
+                                            "caption": "-- Variable auswählen --",
+                                            "value": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "NumberSpinner",
+                                    "name": "Contact2LightOpenFloat",
+                                    "caption": "Wert",
+                                    "digits": 2,
+                                    "visible": false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Emergency Contact (optional)",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "Define an emergency contact. The blind is opened immediately if the contact is open. Additionally the automatic is deactivated."
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "EmergencyContactID",
+                    "validVariableTypes": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "caption": "Emergency contact ID"
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Expert Parameters",
+            "items": [
+                {
+                    "type": "NumberSpinner",
+                    "name": "DeactivationAutomaticMovement",
+                    "caption": "Deactivation Time after automatic Movement",
+                    "suffix": "Minutes",
+                    "minimum": 0
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "DeactivationManualMovement",
+                    "caption": "Deactivation Time after manual Movement",
+                    "suffix": "Minutes",
+                    "minimum": 0
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "MinMovement",
+                    "caption": "Minimum of Movement",
+                    "digits": "1",
+                    "suffix": "%"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "MinMovementAtEndPosition",
+                    "caption": "Minimum of Movement to reach End Position",
+                    "digits": "1",
+                    "suffix": "%"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "ShowNotUsedElements",
+                    "caption": "Show not used elements"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "TestCenter"
+        },
+        {
+            "type": "RowLayout",
+            "items": [
+                {
+                    "type": "NumberSpinner",
+                    "name": "BlindLevel",
+                    "caption": "BlindLevel: Percentage from 0 (open) to 100 (close)",
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "SlatsLevel",
+                    "caption": "SlatsLevel: Percentage from 0 (open) to 100 (close)",
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                {
+                    "type": "Button",
+                    "caption": "Move Blind",
+                    "onClick": "$module = new IPSModule($id);if (BLC_MoveBlind($id, $BlindLevel, $SlatsLevel, 0, '')){echo $module->Translate('Finished!');} else {echo $module->Translate('Error!');}"
+                }
+            ]
+        },
+        {
+            "type": "RowLayout",
+            "items": [
+                {
+                    "type": "NumberSpinner",
+                    "name": "ShadowingPosition",
+                    "caption": "Shadowing Position from 0 (no Shadowing) to 100 (full Shadowing)",
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                {
+                    "type": "Button",
+                    "name": "btnMoveBlindToShadowingPosition",
+                    "caption": "Move Blind",
+                    "onClick": "$module = new IPSModule($id);if (IPS_RequestAction($id, 'MoveBlindToShadowingPosition', $ShadowingPosition)){echo $module->Translate('Finished!');} else {echo $module->Translate('Error!');}"
+                }
+            ]
+        },
+        {
+            "type": "Button",
+            "caption": "Show Configuration",
+            "onClick": "echo IPS_GetObject($id)['ObjectName'] . ' (#' . $id . ')' . PHP_EOL . PHP_EOL; print_r(json_decode(IPS_GetConfiguration ($id), true));"
+        },
+        {
+            "type": "Button",
+            "caption": "Steuerungslauf durchführen",
+            "onClick": "$module = new IPSModule($id);if (BLC_ControlBlind($id, true)){echo $module->Translate('Finished!');} else {echo $module->Translate('Error!');}"
+        }
+    ],
+    "status": [
+        {
+            "code": 201,
+            "icon": "error",
+            "caption": "Weekly Timetable Event ID is not valid"
+        },
+        {
+            "code": 202,
+            "icon": "error",
+            "caption": "Holiday Indicator ID is not valid"
+        },
+        {
+            "code": 203,
+            "icon": "error",
+            "caption": "Blind Level ID is not valid"
+        },
+        {
+            "code": 204,
+            "icon": "error",
+            "caption": "Brightness ID is not valid"
+        },
+        {
+            "code": 205,
+            "icon": "error",
+            "caption": "Brightness Threshold ID is not valid"
+        },
+        {
+            "code": 206,
+            "icon": "error",
+            "caption": "IsDay ID is not valid"
+        },
+        {
+            "code": 207,
+            "icon": "error",
+            "caption": "Deactivation Time Manual is not valid"
+        },
+        {
+            "code": 208,
+            "icon": "error",
+            "caption": "Deactivation Time Automatic is not valid"
+        },
+        {
+            "code": 209,
+            "icon": "error",
+            "caption": "ScheduleGroups of Timetable are not valid"
+        },
+        {
+            "code": 210,
+            "icon": "error",
+            "caption": "Contact 1 ID is not valid"
+        },
+        {
+            "code": 211,
+            "icon": "error",
+            "caption": "Contact 2 ID is not valid"
+        },
+        {
+            "code": 212,
+            "icon": "error",
+            "caption": "Emergency Contact ID is not valid"
+        },
+        {
+            "code": 213,
+            "icon": "error",
+            "caption": "WakeUpTime ID is not valid"
+        },
+        {
+            "code": 214,
+            "icon": "error",
+            "caption": "SleepTime ID is not valid"
+        },
+        {
+            "code": 215,
+            "icon": "error",
+            "caption": "DayStart ID is not valid"
+        },
+        {
+            "code": 216,
+            "icon": "error",
+            "caption": "DayEnd ID is not valid"
+        },
+        {
+            "code": 217,
+            "icon": "error",
+            "caption": "Blind Level may not be emulated"
+        },
+        {
+            "code": 218,
+            "icon": "error",
+            "caption": "Slats Level may not be emulated"
+        },
+        {
+            "code": 220,
+            "icon": "error",
+            "caption": "Shadowing according to sun position: Activator ID is not valid"
+        },
+        {
+            "code": 221,
+            "icon": "error",
+            "caption": "Shadowing according to sun position: Azimuth ID is not valid"
+        },
+        {
+            "code": 222,
+            "icon": "error",
+            "caption": "Shadowing according to sun position: Altitude ID is not valid"
+        },
+        {
+            "code": 223,
+            "icon": "error",
+            "caption": "Shadowing according to sun position: Brightness ID is not valid"
+        },
+        {
+            "code": 224,
+            "icon": "error",
+            "caption": "Shadowing according to sun position: Brightness Threshold ID is not valid"
+        },
+        {
+            "code": 225,
+            "icon": "error",
+            "caption": "Shadowing according to sun position: Temperature ID is not valid"
+        },
+        {
+            "code": 230,
+            "icon": "error",
+            "caption": "Shadowing according to brightness: Activator ID is not valid"
+        },
+        {
+            "code": 231,
+            "icon": "error",
+            "caption": "Shadowing according to brightness: Brightness ID is not valid"
+        },
+        {
+            "code": 232,
+            "icon": "error",
+            "caption": "Shadowing according to brightness: Threshold high brightness ID is not valid"
+        },
+        {
+            "code": 233,
+            "icon": "error",
+            "caption": "Shadowing according to brightness: Threshold low brightness ID is not valid"
+        },
+        {
+            "code": 234,
+            "icon": "error",
+            "caption": "A given Blind Level is out of range"
+        },
+        {
+            "code": 235,
+            "icon": "error",
+            "caption": "A given Slats Position is out of range"
+        },
+        {
+            "code": 236,
+            "icon": "error",
+            "caption": "Slats Level ID is not valid"
+        },
+        {
+            "code": 237,
+            "icon": "error",
+            "caption": "Blind Level variable without profile"
+        },
+        {
+            "code": 238,
+            "icon": "error",
+            "caption": "Profile of Blind Level variable has wrong min/max values"
+        },
+        {
+            "code": 239,
+            "icon": "error",
+            "caption": "Profile of Slats Level variable has wrong min/max values"
+        },
+        {
+            "code": 240,
+            "icon": "error",
+            "caption": "Slats Level variable without profile"
+        }
+    ]
+}
