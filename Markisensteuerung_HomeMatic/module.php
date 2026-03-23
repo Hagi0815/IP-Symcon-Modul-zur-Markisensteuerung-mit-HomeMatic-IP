@@ -100,6 +100,10 @@ class Markisensteuerung_HomeMatic extends IPSModule
         // Zusatzsensoren dynamisch anlegen oder löschen
         $this->SyncExtraSensorVariables(1);
         $this->SyncExtraSensorVariables(2);
+
+        // Aktionsskripte für alle Variablen anlegen/aktualisieren
+        $this->RegisterActionScripts();
+
         $this->SetTimerInterval('CheckTimer', 300000);
     }
 
