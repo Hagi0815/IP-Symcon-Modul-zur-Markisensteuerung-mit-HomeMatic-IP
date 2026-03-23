@@ -97,26 +97,9 @@ class Markisensteuerung_HomeMatic extends IPSModule
         if ($this->GetValue('WindThreshold') == 0) {
             $this->SetValue('WindThreshold', $this->ReadPropertyInteger('WindThresholdDefault'));
         }
-        // Zusatzsensor 1 initialisieren
-        if ($this->GetValue('Extra1Type') === '') {
-            $this->SetValue('Extra1Type', $this->ReadPropertyString('ExtraSensor1Type'));
-        }
-        // Profil immer aktuell setzen (auch nach Neustart)
-        $this->ApplyThresholdProfile('Extra1Threshold', $this->GetValue('Extra1Type'));
-        if ($this->GetValue('Extra1Threshold') == 0) {
-            $this->SetValue('Extra1Threshold', $this->ReadPropertyInteger('ExtraSensor1ThresholdDefault'));
-        }
-
-        // Zusatzsensor 2 initialisieren
-        if ($this->GetValue('Extra2Type') === '') {
-            $this->SetValue('Extra2Type', $this->ReadPropertyString('ExtraSensor2Type'));
-        }
-        $this->ApplyThresholdProfile('Extra2Threshold', $this->GetValue('Extra2Type'));
-        if ($this->GetValue('Extra2Threshold') == 0) {
-            $this->SetValue('Extra2Threshold', $this->ReadPropertyInteger('ExtraSensor2ThresholdDefault'));
-        }
-
-        $this->RegisterActionScripts();
+        // Zusatzsensoren dynamisch anlegen oder löschen
+        $this->SyncExtraSensorVariables(1);
+        $this->SyncExtraSensorVariables(2);
         $this->SetTimerInterval('CheckTimer', 300000);
     }
 
@@ -238,9 +221,16 @@ class Markisensteuerung_HomeMatic extends IPSModule
             $retractReasons[] = 'Ab Einfahrzeit (' . $this->MinToTime($endMin) . ')';
         }
 
-        // Zusatzsensoren prüfen
+        // Zusatzsensoren prüfen (nur wenn Variable aktiv/vorhanden)
         foreach ([1, 2] as $n) {
-            $sensorID  = $this->ReadPropertyInteger('ExtraSensor' . $n . 'ID');
+            $sensorID   = $this->ReadPropertyInteger('ExtraSensor' . $n . 'ID');
+            $typeVarID  = @$this->GetIDForIdent('Extra' . $n . 'Type');
+            $thrVarID   = @$this->GetIDForIdent('Extra' . $n . 'Threshold');
+
+            if (!$typeVarID || !$thrVarID) {
+                continue; // Variable nicht angelegt = deaktiviert
+            }
+
             $type      = $this->GetValue('Extra' . $n . 'Type');
             $threshold = $this->GetValue('Extra' . $n . 'Threshold');
 
@@ -387,7 +377,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
      */
     private function ApplyThresholdProfile(string $ident, string $type)
     {
-        $varID = $this->GetIDForIdent($ident);
+        $varID = @$this->GetIDForIdent($ident);
         if ($varID > 0) {
             IPS_SetVariableCustomProfile($varID, $this->ThresholdProfileName($type));
         }
