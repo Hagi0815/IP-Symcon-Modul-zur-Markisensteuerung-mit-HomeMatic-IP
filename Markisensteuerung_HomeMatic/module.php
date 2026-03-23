@@ -405,59 +405,82 @@ class Markisensteuerung_HomeMatic extends IPSModule
     private function RegisterActionScripts()
     {
         $instanceID = $this->InstanceID;
-        $parentID   = IPS_GetObject($instanceID)['ParentID'];
 
-        $scripts = [
-            'Markise – Ausfahrzeit setzen' => '<?php
+        // Jedes Skript wird direkt unter der zugehörigen Variable angelegt.
+        // Struktur: Variable → Skript als Kind-Objekt
+        $map = [
+            'StartMin'       => [
+                'caption' => 'Markise – Ausfahrzeit setzen',
+                'code'    => '<?php
 // Ausfahrzeit setzen (Minuten seit Mitternacht, viertelstündlich)
 // Beispiele: 480 = 08:00, 495 = 08:15, 510 = 08:30, 525 = 08:45
 $minuten = 480;
 IPS_RequestAction(' . $instanceID . ', "StartMin", $minuten);
 ',
-            'Markise – Einfahrzeit setzen' => '<?php
+            ],
+            'EndMin'         => [
+                'caption' => 'Markise – Einfahrzeit setzen',
+                'code'    => '<?php
 // Einfahrzeit setzen (Minuten seit Mitternacht, viertelstündlich)
 // Beispiele: 1200 = 20:00, 1215 = 20:15, 1170 = 19:30
 $minuten = 1200;
 IPS_RequestAction(' . $instanceID . ', "EndMin", $minuten);
 ',
-            'Markise – Windgrenze setzen' => '<?php
+            ],
+            'WindThreshold'  => [
+                'caption' => 'Markise – Windgrenze setzen',
+                'code'    => '<?php
 // Windgrenze setzen (km/h)
 // Erlaubte Werte: 5, 10, 15, 20, 25, 30, 40, 50, 60
 $grenze = 10;
 IPS_RequestAction(' . $instanceID . ', "WindThreshold", $grenze);
 ',
-            'Markise – Zusatz 1 konfigurieren' => '<?php
+            ],
+            'Extra1Threshold' => [
+                'caption' => 'Markise – Zusatz 1 konfigurieren',
+                'code'    => '<?php
 // Zusatzsensor 1: Typ und Schwellwert setzen
-// Typen: "off", "temperature", "brightness", "uv"
-$typ       = "temperature";
-$schwelle  = 35;
+// Typen: "off", "temperature", "brightness", "uv", "boolean"
+$typ      = "temperature";
+$schwelle = 35;
 IPS_RequestAction(' . $instanceID . ', "Extra1Type", $typ);
 IPS_RequestAction(' . $instanceID . ', "Extra1Threshold", $schwelle);
 ',
-            'Markise – Zusatz 2 konfigurieren' => '<?php
+            ],
+            'Extra2Threshold' => [
+                'caption' => 'Markise – Zusatz 2 konfigurieren',
+                'code'    => '<?php
 // Zusatzsensor 2: Typ und Schwellwert setzen
-// Typen: "off", "temperature", "brightness", "uv"
-$typ       = "brightness";
-$schwelle  = 60000;
+// Typen: "off", "temperature", "brightness", "uv", "boolean"
+$typ      = "brightness";
+$schwelle = 60000;
 IPS_RequestAction(' . $instanceID . ', "Extra2Type", $typ);
 IPS_RequestAction(' . $instanceID . ', "Extra2Threshold", $schwelle);
 ',
+            ],
         ];
 
-        foreach ($scripts as $caption => $code) {
+        foreach ($map as $ident => $cfg) {
+            $varID = @$this->GetIDForIdent($ident);
+            if ($varID === false || $varID === 0) {
+                continue;
+            }
+
+            // Prüfen ob bereits ein Skript mit diesem Namen unter der Variable existiert
             $existingID = 0;
-            foreach (IPS_GetChildrenIDs($parentID) as $childID) {
+            foreach (IPS_GetChildrenIDs($varID) as $childID) {
                 if (IPS_GetObject($childID)['ObjectType'] === 3
-                    && IPS_GetObject($childID)['ObjectName'] === $caption) {
+                    && IPS_GetObject($childID)['ObjectName'] === $cfg['caption']) {
                     $existingID = $childID;
                     break;
                 }
             }
+
             if ($existingID === 0) {
-                $scriptID = IPS_CreateScript(0);
-                IPS_SetName($scriptID, $caption);
-                IPS_SetParent($scriptID, $parentID);
-                IPS_SetScriptContent($scriptID, $code);
+                $scriptID = IPS_CreateScript(0); // 0 = PHP
+                IPS_SetName($scriptID, $cfg['caption']);
+                IPS_SetParent($scriptID, $varID);  // Parent = die Variable selbst
+                IPS_SetScriptContent($scriptID, $cfg['code']);
             }
         }
     }
