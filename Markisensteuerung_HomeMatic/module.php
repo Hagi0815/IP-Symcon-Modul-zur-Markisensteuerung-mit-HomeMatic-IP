@@ -547,7 +547,7 @@ IPS_RequestAction(' . $instanceID . ', "Extra2Threshold", $schwelle);
                 $scriptID = $existingID;
             }
             // Variablenaktion immer aktuell setzen (auch bei bestehenden Skripten)
-            IPS_SetVariableAction($varID, $scriptID);
+            IPS_SetVariableCustomAction($varID, $scriptID);
         }
     }
 
