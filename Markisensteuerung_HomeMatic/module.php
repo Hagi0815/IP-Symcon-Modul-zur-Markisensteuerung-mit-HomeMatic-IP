@@ -91,13 +91,17 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
         $this->RegisterProfiles();
 
-        // Standardwerte setzen beim ersten Start
-        if ($this->GetValue('StartMin') == 0) {
+        // Standardwerte nur beim allerersten Start setzen
+        // (VariableChanged == 0 bedeutet die Variable wurde noch nie beschrieben)
+        $startVarID = $this->GetIDForIdent('StartMin');
+        if ($startVarID > 0 && IPS_GetVariable($startVarID)['VariableChanged'] == 0) {
             $startMin = $this->ReadPropertyInteger('StartHourDefault') * 60
                       + $this->ReadPropertyInteger('StartMinDefault');
             $this->SetValue('StartMin', $startMin);
         }
-        if ($this->GetValue('EndMin') == 0) {
+
+        $endVarID = $this->GetIDForIdent('EndMin');
+        if ($endVarID > 0 && IPS_GetVariable($endVarID)['VariableChanged'] == 0) {
             $endMin = $this->ReadPropertyInteger('EndHourDefault') * 60
                     + $this->ReadPropertyInteger('EndMinDefault');
             $this->SetValue('EndMin', $endMin);
@@ -148,8 +152,16 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
             case 'ManualDrive':
                 $this->SetValue('ManualDrive', $Value);
-                $this->SetActorPosition($this->ReadPropertyInteger('ActorID'), $Value ? 100 : 0);
-                $this->SetValue('LastAction', 'Manuell ' . ($Value ? 'ausgefahren' : 'eingefahren'));
+                if ($Value) {
+                    // Manuell ausfahren – nur wenn keine Einfahrbedingung aktiv ist
+                    $this->SetActorPosition($this->ReadPropertyInteger('ActorID'), 100);
+                    $this->SetValue('LastAction', 'Manuell ausgefahren');
+                    $this->LogMessage('Markise manuell ausgefahren', KL_MESSAGE);
+                } else {
+                    // Schalter zurückgesetzt – Markise bleibt wie sie ist, nächster Timer-Check entscheidet
+                    $this->SetValue('LastAction', 'Manuell-Schalter zurückgesetzt');
+                    $this->LogMessage('Manuell-Schalter zurückgesetzt', KL_MESSAGE);
+                }
                 break;
 
             case 'StartMin':

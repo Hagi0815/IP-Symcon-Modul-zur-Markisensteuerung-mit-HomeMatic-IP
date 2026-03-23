@@ -12,7 +12,7 @@ Dieses Modul steuert eine Markise abhängig von Regen, Wind und Tageszeit. Es un
 - Detaillierte Anzeige der letzten Aktion inkl. Begründung
 - Zeitstempel der letzten Prüfung
 - Vollständiges Logging in die IP-Symcon Konsole (Info, Warnung, Fehler)
-- Timer-Prüfung alle 5 Minuten
+- Timer-Prüfung alle 5 Minuten (IPS 5.x / 6.x / 8.x kompatibel)
 
 ## Eigenschaften (Konfiguration)
 
@@ -59,6 +59,6 @@ Sind alle Bedingungen erfüllt (kein Regen, kein starker Wind, innerhalb der Bet
 Die manuelle Steuerung über `ManualDrive` überschreibt den Automatikbetrieb direkt, ohne die Automatik zu deaktivieren.
 
 ## Kompatibilität
-- IP-Symcon ab Version 8.0
+- IP-Symcon ab Version 5.0
 - Getestet mit HmIP-BROLL und HmIP-FROLL
 - Boolean-Aktoren werden ebenfalls unterstützt
