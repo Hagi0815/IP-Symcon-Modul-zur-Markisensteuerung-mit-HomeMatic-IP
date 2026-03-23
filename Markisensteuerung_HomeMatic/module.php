@@ -537,9 +537,13 @@ IPS_RequestAction(' . $instanceID . ', "Extra2Threshold", $schwelle);
             if ($existingID === 0) {
                 $scriptID = IPS_CreateScript(0); // 0 = PHP
                 IPS_SetName($scriptID, $cfg['caption']);
-                IPS_SetParent($scriptID, $varID);  // Parent = die Variable selbst
+                IPS_SetParent($scriptID, $varID);
                 IPS_SetScriptContent($scriptID, $cfg['code']);
+            } else {
+                $scriptID = $existingID;
             }
+            // Variablenaktion immer aktuell setzen (auch bei bestehenden Skripten)
+            IPS_SetVariableAction($varID, $scriptID);
         }
     }
 
