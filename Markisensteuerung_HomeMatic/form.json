@@ -111,24 +111,64 @@
             "caption": "Zeitfenster (Standardwerte)",
             "items": [
                 {
-                    "type": "NumberSpinner",
-                    "name": "StartHourDefault",
-                    "caption": "Standard-Ausfahrzeit (Stunde)",
-                    "minimum": 0,
-                    "maximum": 23,
-                    "suffix": ":00 Uhr"
+                    "type": "Label",
+                    "caption": "Standard-Ausfahrzeit"
                 },
                 {
-                    "type": "NumberSpinner",
-                    "name": "EndHourDefault",
-                    "caption": "Standard-Einfahrzeit (Stunde)",
-                    "minimum": 0,
-                    "maximum": 23,
-                    "suffix": ":00 Uhr"
+                    "type": "RowLayout",
+                    "items": [
+                        {
+                            "type": "NumberSpinner",
+                            "name": "StartHourDefault",
+                            "caption": "Stunde",
+                            "minimum": 0,
+                            "maximum": 23,
+                            "suffix": " h",
+                            "width": "100px"
+                        },
+                        {
+                            "type": "Select",
+                            "name": "StartMinDefault",
+                            "caption": "Minute",
+                            "width": "100px",
+                            "options": [
+                                { "caption": "00", "value": 0  },
+                                { "caption": "15", "value": 15 },
+                                { "caption": "30", "value": 30 },
+                                { "caption": "45", "value": 45 }
+                            ]
+                        }
+                    ]
                 },
                 {
                     "type": "Label",
-                    "caption": "Im WebFront viertelstündlich wählbar (z.B. 08:00, 08:15, 08:30, 08:45)."
+                    "caption": "Standard-Einfahrzeit"
+                },
+                {
+                    "type": "RowLayout",
+                    "items": [
+                        {
+                            "type": "NumberSpinner",
+                            "name": "EndHourDefault",
+                            "caption": "Stunde",
+                            "minimum": 0,
+                            "maximum": 23,
+                            "suffix": " h",
+                            "width": "100px"
+                        },
+                        {
+                            "type": "Select",
+                            "name": "EndMinDefault",
+                            "caption": "Minute",
+                            "width": "100px",
+                            "options": [
+                                { "caption": "00", "value": 0  },
+                                { "caption": "15", "value": 15 },
+                                { "caption": "30", "value": 30 },
+                                { "caption": "45", "value": 45 }
+                            ]
+                        }
+                    ]
                 }
             ]
         },

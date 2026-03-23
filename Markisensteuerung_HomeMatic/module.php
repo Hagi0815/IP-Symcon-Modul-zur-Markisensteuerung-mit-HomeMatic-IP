@@ -36,8 +36,10 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
         // --- Standardwerte für WebFront-Variablen ---
         // Uhrzeiten als Minuten seit Mitternacht (z.B. 8*60 = 480 = 08:00)
-        $this->RegisterPropertyInteger('StartHourDefault', 8);   // 08:00
-        $this->RegisterPropertyInteger('EndHourDefault', 20);    // 20:00
+        $this->RegisterPropertyInteger('StartHourDefault', 8);   // Stunde
+        $this->RegisterPropertyInteger('StartMinDefault', 0);    // Minute (0/15/30/45)
+        $this->RegisterPropertyInteger('EndHourDefault', 20);    // Stunde
+        $this->RegisterPropertyInteger('EndMinDefault', 0);      // Minute (0/15/30/45)
         $this->RegisterPropertyInteger('WindThresholdDefault', 10);
 
         // --- Profile ZUERST anlegen ---
@@ -91,10 +93,14 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
         // Standardwerte setzen beim ersten Start
         if ($this->GetValue('StartMin') == 0) {
-            $this->SetValue('StartMin', $this->ReadPropertyInteger('StartHourDefault') * 60);
+            $startMin = $this->ReadPropertyInteger('StartHourDefault') * 60
+                      + $this->ReadPropertyInteger('StartMinDefault');
+            $this->SetValue('StartMin', $startMin);
         }
         if ($this->GetValue('EndMin') == 0) {
-            $this->SetValue('EndMin', $this->ReadPropertyInteger('EndHourDefault') * 60);
+            $endMin = $this->ReadPropertyInteger('EndHourDefault') * 60
+                    + $this->ReadPropertyInteger('EndMinDefault');
+            $this->SetValue('EndMin', $endMin);
         }
         if ($this->GetValue('WindThreshold') == 0) {
             $this->SetValue('WindThreshold', $this->ReadPropertyInteger('WindThresholdDefault'));
