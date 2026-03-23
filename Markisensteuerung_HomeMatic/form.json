@@ -112,23 +112,23 @@
             "items": [
                 {
                     "type": "NumberSpinner",
-                    "name": "StartMinDefault",
-                    "caption": "Standard-Ausfahrzeit (Minuten seit 00:00)",
+                    "name": "StartHourDefault",
+                    "caption": "Standard-Ausfahrzeit (Stunde)",
                     "minimum": 0,
-                    "maximum": 1425,
-                    "suffix": " min"
+                    "maximum": 23,
+                    "suffix": ":00 Uhr"
                 },
                 {
                     "type": "NumberSpinner",
-                    "name": "EndMinDefault",
-                    "caption": "Standard-Einfahrzeit (Minuten seit 00:00)",
+                    "name": "EndHourDefault",
+                    "caption": "Standard-Einfahrzeit (Stunde)",
                     "minimum": 0,
-                    "maximum": 1425,
-                    "suffix": " min"
+                    "maximum": 23,
+                    "suffix": ":00 Uhr"
                 },
                 {
                     "type": "Label",
-                    "caption": "Beispiele: 480 = 08:00 Uhr, 1200 = 20:00 Uhr. Im WebFront viertelstündlich wählbar."
+                    "caption": "Im WebFront viertelstündlich wählbar (z.B. 08:00, 08:15, 08:30, 08:45)."
                 }
             ]
         },

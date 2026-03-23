@@ -36,8 +36,8 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
         // --- Standardwerte für WebFront-Variablen ---
         // Uhrzeiten als Minuten seit Mitternacht (z.B. 8*60 = 480 = 08:00)
-        $this->RegisterPropertyInteger('StartMinDefault', 480);  // 08:00
-        $this->RegisterPropertyInteger('EndMinDefault', 1200);   // 20:00
+        $this->RegisterPropertyInteger('StartHourDefault', 8);   // 08:00
+        $this->RegisterPropertyInteger('EndHourDefault', 20);    // 20:00
         $this->RegisterPropertyInteger('WindThresholdDefault', 10);
 
         // --- Profile ZUERST anlegen ---
@@ -91,10 +91,10 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
         // Standardwerte setzen beim ersten Start
         if ($this->GetValue('StartMin') == 0) {
-            $this->SetValue('StartMin', $this->ReadPropertyInteger('StartMinDefault'));
+            $this->SetValue('StartMin', $this->ReadPropertyInteger('StartHourDefault') * 60);
         }
         if ($this->GetValue('EndMin') == 0) {
-            $this->SetValue('EndMin', $this->ReadPropertyInteger('EndMinDefault'));
+            $this->SetValue('EndMin', $this->ReadPropertyInteger('EndHourDefault') * 60);
         }
         if ($this->GetValue('WindThreshold') == 0) {
             $this->SetValue('WindThreshold', $this->ReadPropertyInteger('WindThresholdDefault'));
