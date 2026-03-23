@@ -22,12 +22,12 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
         // --- Zusatzsensor 1 ---
         $this->RegisterPropertyInteger('ExtraSensor1ID', 0);
-        $this->RegisterPropertyString('ExtraSensor1Type', 'temperature');
+        $this->RegisterPropertyString('ExtraSensor1Type', 'off');
         $this->RegisterPropertyInteger('ExtraSensor1ThresholdDefault', 35);
 
         // --- Zusatzsensor 2 ---
         $this->RegisterPropertyInteger('ExtraSensor2ID', 0);
-        $this->RegisterPropertyString('ExtraSensor2Type', 'brightness');
+        $this->RegisterPropertyString('ExtraSensor2Type', 'off');
         $this->RegisterPropertyInteger('ExtraSensor2ThresholdDefault', 60000);
 
         // --- Aktor-Eigenschaften ---
@@ -63,19 +63,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
         $this->RegisterVariableInteger('WindThreshold', 'Windgrenze (km/h)', 'Markise.WindThreshold', 50);
         $this->EnableAction('WindThreshold');
 
-        // --- WebFront: Zusatzsensor 1 ---
-        $this->RegisterVariableString('Extra1Type', 'Zusatz 1 – Typ', 'Markise.SensorType', 60);
-        $this->EnableAction('Extra1Type');
-
-        $this->RegisterVariableInteger('Extra1Threshold', 'Zusatz 1 – Schwellwert', 'Markise.Threshold.Off', 70);
-        $this->EnableAction('Extra1Threshold');
-
-        // --- WebFront: Zusatzsensor 2 ---
-        $this->RegisterVariableString('Extra2Type', 'Zusatz 2 – Typ', 'Markise.SensorType', 80);
-        $this->EnableAction('Extra2Type');
-
-        $this->RegisterVariableInteger('Extra2Threshold', 'Zusatz 2 – Schwellwert', 'Markise.Threshold.Off', 90);
-        $this->EnableAction('Extra2Threshold');
+        // Extra-Variablen werden dynamisch in ApplyChanges angelegt/gelöscht
 
         // --- Statusvariablen ---
         $this->RegisterVariableString('LastAction', 'Letzte Aktion', '', 100);
@@ -181,7 +169,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
             case 'Extra1Type':
                 $this->SetValue('Extra1Type', (string) $Value);
-                $this->ApplyThresholdProfile('Extra1Threshold', (string) $Value);
+                $this->SyncExtraSensorVariables(1);
                 $this->LogMessage('Zusatz 1 Typ geändert auf ' . $Value, KL_MESSAGE);
                 break;
 
@@ -192,7 +180,7 @@ class Markisensteuerung_HomeMatic extends IPSModule
 
             case 'Extra2Type':
                 $this->SetValue('Extra2Type', (string) $Value);
-                $this->ApplyThresholdProfile('Extra2Threshold', (string) $Value);
+                $this->SyncExtraSensorVariables(2);
                 $this->LogMessage('Zusatz 2 Typ geändert auf ' . $Value, KL_MESSAGE);
                 break;
 
@@ -329,6 +317,68 @@ class Markisensteuerung_HomeMatic extends IPSModule
         // Alle möglichen Schwellwert-Profile vorab anlegen
         foreach (['off', 'temperature', 'brightness', 'uv', 'boolean'] as $t) {
             $this->EnsureThresholdProfile($t);
+        }
+    }
+
+
+    /**
+     * Legt Typ- und Schwellwert-Variable für einen Zusatzsensor an
+     * oder löscht sie wenn der Typ auf 'off' steht.
+     *
+     * @param int $n  Sensor-Nummer (1 oder 2)
+     */
+    private function SyncExtraSensorVariables(int $n)
+    {
+        $typeIdent      = 'Extra' . $n . 'Type';
+        $threshIdent    = 'Extra' . $n . 'Threshold';
+        $typeCaption    = 'Zusatz ' . $n . ' – Typ';
+        $threshCaption  = 'Zusatz ' . $n . ' – Schwellwert';
+        $typePos        = 50 + $n * 20;       // 70 / 90
+        $threshPos      = 50 + $n * 20 + 10;  // 80 / 100
+        $defaultType    = $this->ReadPropertyString('ExtraSensor' . $n . 'Type');
+        $defaultThresh  = $this->ReadPropertyInteger('ExtraSensor' . $n . 'ThresholdDefault');
+
+        // Aktuellen Typ ermitteln – aus Variable oder Property-Default
+        $typeVarID = @$this->GetIDForIdent($typeIdent);
+        $type = ($typeVarID > 0)
+            ? $this->GetValue($typeIdent)
+            : $defaultType;
+
+        if ($type === 'off') {
+            // Variablen löschen falls vorhanden
+            foreach ([$typeIdent, $threshIdent] as $ident) {
+                $varID = @$this->GetIDForIdent($ident);
+                if ($varID > 0) {
+                    // Zugehörige Aktionsskripte darunter ebenfalls löschen
+                    foreach (IPS_GetChildrenIDs($varID) as $childID) {
+                        if (IPS_GetObject($childID)['ObjectType'] === 3) {
+                            IPS_DeleteScript($childID, true);
+                        }
+                    }
+                    $this->UnregisterVariable($ident);
+                }
+            }
+        } else {
+            // Typ-Variable anlegen falls nicht vorhanden
+            if (!($typeVarID > 0)) {
+                $this->RegisterVariableString($typeIdent, $typeCaption, 'Markise.SensorType', $typePos);
+                $this->EnableAction($typeIdent);
+                $this->SetValue($typeIdent, $type);
+            }
+
+            // Schwellwert-Variable anlegen falls nicht vorhanden
+            $thrVarID = @$this->GetIDForIdent($threshIdent);
+            if (!($thrVarID > 0)) {
+                $this->RegisterVariableInteger($threshIdent, $threshCaption, 'Markise.Threshold.Off', $threshPos);
+                $this->EnableAction($threshIdent);
+                $this->SetValue($threshIdent, $defaultThresh);
+            }
+
+            // Profil auf aktuellen Typ setzen
+            $this->ApplyThresholdProfile($threshIdent, $type);
+
+            // Aktionsskript unter Schwellwert-Variable anlegen
+            $this->RegisterActionScripts();
         }
     }
 
