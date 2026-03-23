@@ -59,6 +59,6 @@ Sind alle Bedingungen erfüllt (kein Regen, kein starker Wind, innerhalb der Bet
 Die manuelle Steuerung über `ManualDrive` überschreibt den Automatikbetrieb direkt, ohne die Automatik zu deaktivieren.
 
 ## Kompatibilität
-- IP-Symcon ab Version 5.0
+- IP-Symcon ab Version 8.0
 - Getestet mit HmIP-BROLL und HmIP-FROLL
 - Boolean-Aktoren werden ebenfalls unterstützt
