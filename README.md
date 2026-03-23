@@ -12,7 +12,7 @@ Dieses Modul steuert eine Markise abhängig von Regen, Wind und Tageszeit. Es un
 - Detaillierte Anzeige der letzten Aktion inkl. Begründung
 - Zeitstempel der letzten Prüfung
 - Vollständiges Logging in die IP-Symcon Konsole (Info, Warnung, Fehler)
-- Timer-Prüfung alle 5 Minuten (IPS 5.x / 6.x / 8.x kompatibel)
+- Timer-Prüfung alle 5 Minuten
 
 ## Eigenschaften (Konfiguration)
 
